@@ -48,6 +48,18 @@
 //	is in machine.h.
 //----------------------------------------------------------------------
 
+//c. Tang gia tri bien Program Counter (PC) len 4 de tiep tuc nap lenh
+void increasePC(){
+	//PrevPCReg <- PCReg
+	int counter = kernel->machine->ReadRegister(PCReg);
+	kernel->machine->WriteRegister(PrevPCReg, counter);
+	//PCReg <- NextPCReg
+	counter = kernel->machine->ReadRegister(NextPCReg);
+	kernel->machine->WriteRegister(PCReg, counter);
+	//NextPCReg <- PCReg + 4
+	kernel->machine->WriteRegister(NextPCReg, counter + 4);
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -56,54 +68,105 @@ ExceptionHandler(ExceptionType which)
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
 
     switch (which) {
-    case SyscallException:
-      switch(type) {
-      case SC_Halt:
-	DEBUG(dbgSys, "Shutdown, initiated by user program.\n");
+		// Everything ok!
+		case NoException:
+			return;
 
-	SysHalt();
+		// A program executed a system call.
+		case SyscallException:
+			switch(type) {
+				case SC_Halt:
+					DEBUG(dbgSys, "Shutdown, initiated by user program.\n");
+					printf("\n\n Shutdown, initiated by user program.");
+					SysHalt();
 
-	ASSERTNOTREACHED();
-	break;
+					ASSERTNOTREACHED();
+					break;
 
-      case SC_Add:
-	DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
-	
-	/* Process SysAdd Systemcall*/
-	int result;
-	result = SysAdd(/* int op1 */(int)kernel->machine->ReadRegister(4),
-			/* int op2 */(int)kernel->machine->ReadRegister(5));
+				case SC_PrintNum:
+					SysPrintNum((int)kernel->machine->ReadRegister(4));
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
 
-	DEBUG(dbgSys, "Add returning with " << result << "\n");
-	/* Prepare Result */
-	kernel->machine->WriteRegister(2, (int)result);
-	
-	/* Modify return point */
-	{
-	  /* set previous programm counter (debugging only)*/
-	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
+				case SC_Add:
+					DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
+		
+					/* Process SysAdd Systemcall*/
+					int result;
+					result = SysAdd(/* int op1 */(int)kernel->machine->ReadRegister(4),
+							/* int op2 */(int)kernel->machine->ReadRegister(5));
+					DEBUG(dbgSys, "Add returning with " << result << "\n");
+					/* Prepare Result */
+					kernel->machine->WriteRegister(2, (int)result);
+					
+					/* Modify return point */
+					increasePC();
 
-	  /* set programm counter to next instruction (all Instructions are 4 byte wide)*/
-	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-	  
-	  /* set next programm counter for brach execution */
-	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-	}
+					return;
+		
+					ASSERTNOTREACHED();
 
-	return;
-	
-	ASSERTNOTREACHED();
+					break;
 
-	break;
+				default:
+					cerr << "Unexpected system call " << type << "\n";
+					break;
+			}
+			break;
 
-      default:
-	cerr << "Unexpected system call " << type << "\n";
-	break;
-      }
-      break;
-    default:
-      cerr << "Unexpected user mode exception" << (int)which << "\n";
-      break;
+		// No valid translation found
+		case PageFaultException:
+			DEBUG('a', "\n No valid translation found");
+			printf("\n\n No valid translation found");
+			kernel->interrupt->Halt();
+			break;
+
+		// Write attempted to page marked "read-only"
+		case ReadOnlyException:
+			DEBUG('a', "\n Write attempted to page marked read-only");
+			printf("\n\n Write attempted to page marked read-only");
+			kernel->interrupt->Halt();
+			break;
+
+		// Translation resulted in an invalid physical address
+		case BusErrorException:
+			DEBUG ('a', "\n Translation resulted in an invalid physical address");
+			printf("\n\n Translation resulted in an invalid physical address");
+			kernel->interrupt->Halt();
+			break;
+
+		// Unaligned reference or one that was beyond the end of the address space
+		case AddressErrorException:
+			DEBUG ('a', "\n Unaligned reference or one that was beyond the end of the address space");
+			printf("\n\n Unaligned reference or one that was beyond the end of the address space");
+			kernel->interrupt->Halt();
+			break;
+		
+		// Integer overflow in add or sub.
+		case OverflowException:
+			DEBUG ('a', "\n Unaligned reference or one that was beyond the end of the address space");
+			printf("\n\n Unaligned reference or one that was beyond the end of the address space");
+			kernel->interrupt->Halt();
+			break;
+
+		// Unimplemented or reserved instr.
+		case IllegalInstrException:
+			DEBUG ('a', "\n Unimplemented or reserved instr");
+			printf("\n\n Unimplemented or reserved instr");
+			kernel->interrupt->Halt();
+			break;
+
+		case NumExceptionTypes:
+			DEBUG ('a', "\n Num Exception Types");
+			printf("\n\n Num Exception Types");
+			kernel->interrupt->Halt();
+			break;
+
+		default:
+			cerr << "Unexpected user mode exception" << (int)which << "\n";
+			break;
     }
     ASSERTNOTREACHED();
 }

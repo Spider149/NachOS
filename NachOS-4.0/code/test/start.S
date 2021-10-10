@@ -58,6 +58,14 @@ Add:
 	j 	$31
 	.end Add
 
+	.globl PrintNum
+	.ent	PrintNum
+PrintNum:
+	addiu $2,$0,SC_PrintNum
+	syscall
+	j 	$31
+	.end PrintNum
+
 	.globl Exit
 	.ent	Exit
 Exit:
