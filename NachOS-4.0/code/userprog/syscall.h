@@ -40,6 +40,7 @@
 #define SC_ReadNum  44
 #define SC_ReadChar 45
 #define SC_PrintChar 46
+#define SC_RandomNum 47
 
 #ifndef IN_ASM
 
@@ -68,6 +69,8 @@ void PrintChar(char character);
 /* Read char */
 char ReadChar();
 
+/* Return random > 0 */
+int RandomNum();
 /*
  * Add the two operants and return the result
  */ 

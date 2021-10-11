@@ -114,6 +114,14 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 					break;
 
+				case SC_RandomNum:
+					result = SysRandomNum();
+					kernel->machine->WriteRegister(2, (int)result);
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
 				case SC_Add:
 					DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
 		

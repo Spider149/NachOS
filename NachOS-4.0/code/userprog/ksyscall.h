@@ -13,6 +13,8 @@
 
 #include "kernel.h"
 #include "synchconsole.h"
+#include <stdlib.h>
+#include <time.h>
 
 void SysHalt()
 {
@@ -23,13 +25,19 @@ int SysAdd(int op1, int op2)
 {
   return op1 + op2;
 }
-
+int SysRandomNum()
+{
+  srand(time(NULL));
+  int r = rand() % 2147483647 + 1;
+  return r;
+}
 void SysPrintNum(int number)
 {
   int lastNum, index = 0, i = 0;
   char arr[100] = ""; //MAX_INT 2147483647
-  if (number < 0){
-    number*=-1;
+  if (number < 0)
+  {
+    number *= -1;
     kernel->synchConsoleOut->PutChar('-');
   }
 
