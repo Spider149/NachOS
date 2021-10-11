@@ -37,6 +37,9 @@
 
 #define SC_Add  42
 #define SC_PrintNum 43
+#define SC_ReadNum  44
+#define SC_ReadChar 45
+#define SC_PrintChar 46
 
 #ifndef IN_ASM
 
@@ -53,8 +56,18 @@
 /* Stop Nachos, and print out performance stats */
 void Halt();		
  
-
+/* Print a number */
 void PrintNum(int number);
+
+/* Read a number */
+int ReadNum();
+
+/* Print char */
+void PrintChar(char character);
+
+/* Read char */
+char ReadChar();
+
 /*
  * Add the two operants and return the result
  */ 

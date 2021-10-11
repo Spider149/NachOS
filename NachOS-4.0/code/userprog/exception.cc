@@ -64,6 +64,7 @@ void
 ExceptionHandler(ExceptionType which)
 {
     int type = kernel->machine->ReadRegister(2);
+	int result;
 
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
 
@@ -90,11 +91,34 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 					break;
 
+				case SC_ReadNum:
+					result = SysReadNum();
+					kernel->machine->WriteRegister(2, (int)result);
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
+				case SC_PrintChar:
+					SysPrintChar((char)kernel->machine->ReadRegister(4));
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
+				case SC_ReadChar:
+					result = SysReadChar();
+					kernel->machine->WriteRegister(2, (char)result);
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
 				case SC_Add:
 					DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
 		
 					/* Process SysAdd Systemcall*/
-					int result;
+		
 					result = SysAdd(/* int op1 */(int)kernel->machine->ReadRegister(4),
 							/* int op2 */(int)kernel->machine->ReadRegister(5));
 					DEBUG(dbgSys, "Add returning with " << result << "\n");

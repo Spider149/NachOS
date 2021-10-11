@@ -3,9 +3,9 @@
 int
 main()
 {
-    PrintNum(-1492001111);
-    PrintChar('\n');
-    PrintNum(123213);
+    int result;
+    result = ReadNum();
+    PrintNum(result);
     Halt();
     /* not reached */
 }
