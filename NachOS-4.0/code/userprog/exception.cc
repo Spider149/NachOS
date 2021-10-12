@@ -150,50 +150,50 @@ ExceptionHandler(ExceptionType which)
 
 		// No valid translation found
 		case PageFaultException:
-			DEBUG('a', "\n No valid translation found");
-			printf("\n\n No valid translation found");
-			kernel->interrupt->Halt();
+			DEBUG(dbgAddr, "No valid translation found \n");
+			cerr << "No valid translation found \n";
+			SysHalt();
 			break;
 
 		// Write attempted to page marked "read-only"
 		case ReadOnlyException:
-			DEBUG('a', "\n Write attempted to page marked read-only");
-			printf("\n\n Write attempted to page marked read-only");
-			kernel->interrupt->Halt();
+			DEBUG(dbgAddr, "Write attempted to page marked read-only \n");
+			cerr << "Write attempted to page marked read-only \n";
+			SysHalt();
 			break;
 
 		// Translation resulted in an invalid physical address
 		case BusErrorException:
-			DEBUG ('a', "\n Translation resulted in an invalid physical address");
-			printf("\n\n Translation resulted in an invalid physical address");
-			kernel->interrupt->Halt();
+			DEBUG (dbgAddr, "Translation resulted in an invalid physical address \n");
+			cerr << "Translation resulted in an invalid physical address \n";
+			SysHalt();
 			break;
 
 		// Unaligned reference or one that was beyond the end of the address space
 		case AddressErrorException:
-			DEBUG ('a', "\n Unaligned reference or one that was beyond the end of the address space");
-			printf("\n\n Unaligned reference or one that was beyond the end of the address space");
-			kernel->interrupt->Halt();
+			DEBUG (dbgAddr, "Unaligned reference or one that was beyond the end of the address space \n");
+			cerr << "Unaligned reference or one that was beyond the end of the address space \n";
+			SysHalt();
 			break;
 		
 		// Integer overflow in add or sub.
 		case OverflowException:
-			DEBUG ('a', "\n Unaligned reference or one that was beyond the end of the address space");
-			printf("\n\n Unaligned reference or one that was beyond the end of the address space");
-			kernel->interrupt->Halt();
+			DEBUG (dbgAddr, "Unaligned reference or one that was beyond the end of the address space \n");
+			cerr << "Unaligned reference or one that was beyond the end of the address space \n";
+			SysHalt();
 			break;
 
 		// Unimplemented or reserved instr.
 		case IllegalInstrException:
-			DEBUG ('a', "\n Unimplemented or reserved instr");
-			printf("\n\n Unimplemented or reserved instr");
-			kernel->interrupt->Halt();
+			DEBUG (dbgAddr, "Unimplemented or reserved instr \n");
+			cerr << "Unimplemented or reserved instr \n";
+			SysHalt();
 			break;
 
 		case NumExceptionTypes:
-			DEBUG ('a', "\n Num Exception Types");
-			printf("\n\n Num Exception Types");
-			kernel->interrupt->Halt();
+			DEBUG (dbgAddr, "\n Num Exception Types");
+			cerr << "Num Exception Types \n";
+			SysHalt();
 			break;
 
 		default:
