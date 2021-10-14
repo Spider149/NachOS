@@ -9,6 +9,7 @@ main()
     ReadString(str, MAX_LENGTH);
     PrintString("Chuoi ky tu vua nhap la:\n");
     PrintString(str);
+    PrintChar('\n');
     Halt();
     /* not reached */
 }

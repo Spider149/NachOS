@@ -11,6 +11,7 @@ main()
     n = ReadNum();
     PrintString("So nguyen vua nhap la:\n");
     PrintNum(n);    
+    PrintChar('\n');
     Halt();
     /* not reached */
 }
