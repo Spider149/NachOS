@@ -10,6 +10,8 @@
 
 #ifndef __USERPROG_KSYSCALL_H__
 #define __USERPROG_KSYSCALL_H__
+#define MAX_LENGTH 1000
+#define MAX_INT 2147483647
 
 #include "kernel.h"
 #include "synchconsole.h"
@@ -25,14 +27,17 @@ int SysAdd(int op1, int op2)
 {
   return op1 + op2;
 }
+
 int SysRandomNum()
 {
   srand(time(NULL));
   int r = rand() % 2147483647 + 1;
   return r;
 }
-void SysPrintNum(int number)
+
+void SysPrintNum(int Number)
 {
+  long long number = Number;
   int lastNum, index = 0, i = 0;
   char arr[100] = ""; //MAX_INT 2147483647
   if (number < 0)
@@ -55,65 +60,33 @@ void SysPrintNum(int number)
   }
 }
 
-int pow(int a, int b)
+int SysReadNum()
 {
-  int result = 1;
-  for (int i = 0; i < b; i++)
-  {
-    result *= a;
-  }
-  return result;
-}
+  long long result = 0;
+  int sign = 0;
 
-bool isOutOfBound(char num[100], int length)
-{
-  int start = 0;
-  char limit[11] = {'2', '1', '4', '7', '4', '8', '3', '6', '4', '7'};
-
-  if (num[0] == '-')
-  {
-    if (length > 11)
-      return true;
-    if (length < 11)
-      return false;
-    start = 1;
-    limit[9] = '8';
-    for (int i = start; i < length; i++)
-    {
-      if (num[i] < limit[i - 1])
-        return false;
-      if (num[i] > limit[i - 1])
-        return true;
+  while (true) {
+    char temp = kernel->synchConsoleIn->GetChar();
+    if(temp == '-' && sign == 0){
+      sign = -1;
     }
-  }
-  else
-  {
-    if (length > 10)
-      return true;
-    if (length < 10)
-      return false;
-    for (int i = start; i < length; i++)
-    {
-      if (num[i] < limit[i])
-        return false;
-      if (num[i] > limit[i])
-        return true;
+    else if(temp == '+' && sign == 0){
+      sign = 1;
     }
+    else if('0' <= temp && temp <= '9'){
+      if(sign == 0)
+        sign = 1;
+      result = result * 10 + (temp - '0') * sign;
+      if (result > MAX_INT)
+        return MAX_INT;
+      if (result < -MAX_INT - 1)
+        return -MAX_INT - 1;
+    }
+    else if(temp == '\n') {
+      return result;
+    }
+    else return 0;
   }
-  return false;
-}
-
-bool isValidNumber(char num[100], int length)
-{
-  int start = 0;
-  if (num[0] == '-')
-    start = 1;
-  for (int i = start; i < length; i++)
-  {
-    if (num[i] < '0' || num[i] > '9')
-      return false;
-  }
-  return true;
 }
 
 void SysPrintChar(char character)
@@ -128,37 +101,66 @@ char SysReadChar()
   return c;
 }
 
-int SysReadNum()
-{
-  char arr[100]; //MAX_INT 2147483647
-  int result = 0, index = 0;
-  int sign, start;
-  char temp;
-  do
-  {
-    temp = kernel->synchConsoleIn->GetChar();
-    if (temp != EOF)
-      arr[index++] = temp;
-  } while (temp != EOF);
-  if (isValidNumber(arr, index))
-  {
-    sign = arr[0] == '-' ? -1 : 1;
-    start = sign == 1 ? 0 : 1;
-    if (isOutOfBound(arr, index) && sign == -1)
-      return -2147483647 - 1;
-    if (isOutOfBound(arr, index) && sign == 1)
-      return 2147483647;
+void System2User(int virtAddr, int length, char* buffer) {
+  int i = 0;
+  int temp = 0 ;
+  do {
+    temp= (int) buffer[i];
+    kernel->machine->WriteMem(virtAddr+i,1,temp);
+    ++i;
+  } while(i < length && temp != 0);
+} 
 
-    for (int i = index; i >= start; i--)
-    {
-      result = result * 10 + (arr[i] - '0');
-    }
-    return result * sign;
-  }
-  else
-    result = 0;
+void SysReadString() {
+  int length = kernel->machine->ReadRegister(5);
+	char* sysBuffer = new char[length + 1];
 
-  return result;
+	int i = 0;
+	while (i < length){
+		char ch = kernel->synchConsoleIn->GetChar();
+		if (ch == '\n' || ch == 0){
+			sysBuffer[i] = '\0';
+			break;
+		}
+		sysBuffer[i] = ch;
+    i++;
+	}
+  sysBuffer[i] = '\0';
+	System2User(kernel->machine->ReadRegister(4), i+1, sysBuffer);
+	delete[] sysBuffer;
 }
+
+char* User2System(int virtAddr,int limit) {
+  int temp;
+  char* kernelBuffer = new char[limit +1];
+  if (kernelBuffer == NULL)
+    return kernelBuffer;
+  
+  for (int i = 0 ; i < limit;i++)
+  {
+    kernel->machine->ReadMem(virtAddr + i,1,&temp);
+    kernelBuffer[i] = (char)temp;
+    if (temp == 0)
+      break;
+  }
+  return kernelBuffer;
+}
+
+void SysPrintString() {
+  char* sysBuffer = User2System(kernel->machine->ReadRegister(4), MAX_LENGTH);
+
+  int i = 0;
+  while(i < MAX_LENGTH){
+    char c = sysBuffer[i];
+    if(c != '\0') 
+      kernel->synchConsoleOut->PutChar(c);
+    else 
+      break;
+    i++;
+  }
+  delete[] sysBuffer;
+}
+
+
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */

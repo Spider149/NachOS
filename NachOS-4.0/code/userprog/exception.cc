@@ -122,6 +122,22 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 					break;
 
+				case SC_PrintString:
+					SysPrintString();
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
+				case SC_ReadString:
+					SysReadString();
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
+
+
 				case SC_Add:
 					DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
 		
