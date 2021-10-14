@@ -75,10 +75,10 @@ void PrintChar(char character);
 int RandomNum();
 
 /*  */
-void ReadString(char* buffer, int length);
+void ReadString(char buffer[], int length);
 
 /*  */
-void PrintString(char* buffer);
+void PrintString(char buffer[]);
 /*
  * Add the two operants and return the result
  */ 

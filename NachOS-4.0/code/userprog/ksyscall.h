@@ -76,16 +76,22 @@ int SysReadNum()
     else if('0' <= temp && temp <= '9'){
       if(sign == 0)
         sign = 1;
+
       result = result * 10 + (temp - '0') * sign;
-      if (result > MAX_INT)
+      
+      if (result > MAX_INT){
         return MAX_INT;
-      if (result < -MAX_INT - 1)
+      }
+      if (result < -MAX_INT - 1){
         return -MAX_INT - 1;
+      }
     }
-    else if(temp == '\n') {
+    else if(temp == '\n' || temp == ' ') {
       return result;
     }
-    else return 0;
+    else {
+      return 0;
+    }
   }
 }
 
@@ -101,15 +107,19 @@ char SysReadChar()
   return c;
 }
 
-void System2User(int virtAddr, int length, char* buffer) {
-  int i = 0;
-  int temp = 0 ;
-  do {
-    temp= (int) buffer[i];
-    kernel->machine->WriteMem(virtAddr+i,1,temp);
-    ++i;
-  } while(i < length && temp != 0);
-} 
+int System2User(int virtAddr,int len,char* buffer)
+{ 
+ if (len < 0) return -1;
+ if (len == 0)return len;
+ int i = 0;
+ int oneChar = 0 ;
+ do{
+ oneChar= (int) buffer[i];
+ kernel->machine->WriteMem(virtAddr+i,1,oneChar);
+ ++i;
+ }while(i < len && oneChar != 0);
+ return i;
+}
 
 void SysReadString() {
   int length = kernel->machine->ReadRegister(5);
@@ -130,20 +140,27 @@ void SysReadString() {
 	delete[] sysBuffer;
 }
 
-char* User2System(int virtAddr,int limit) {
-  int temp;
-  char* kernelBuffer = new char[limit +1];
-  if (kernelBuffer == NULL)
-    return kernelBuffer;
-  
-  for (int i = 0 ; i < limit;i++)
-  {
-    kernel->machine->ReadMem(virtAddr + i,1,&temp);
-    kernelBuffer[i] = (char)temp;
-    if (temp == 0)
-      break;
-  }
-  return kernelBuffer;
+char* User2System(int virtAddr,int limit)
+{
+ int i;// index
+ int oneChar;
+ char* kernelBuf = NULL;
+
+ kernelBuf = new char[limit +1];//need for terminal string
+ if (kernelBuf == NULL)
+ return kernelBuf;
+ //memset(kernelBuf,0,limit+1);
+
+ //printf("\n Filename u2s:");
+ for (i = 0 ; i < limit ;i++)
+ {
+ kernel->machine->ReadMem(virtAddr+i,1,&oneChar);
+ kernelBuf[i] = (char)oneChar;
+ //printf("%c",kernelBuf[i]);
+ if (oneChar == 0)
+ break;
+ }
+ return kernelBuf;
 }
 
 void SysPrintString() {
