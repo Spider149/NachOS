@@ -48,6 +48,7 @@
 //	is in machine.h.
 //----------------------------------------------------------------------
 
+
 //c. Tang gia tri bien Program Counter (PC) len 4 de tiep tuc nap lenh
 void increasePC(){
 	//PrevPCReg <- PCReg
@@ -156,6 +157,72 @@ ExceptionHandler(ExceptionType which)
 		
 					ASSERTNOTREACHED();
 
+					break;
+
+				case SC_Open:{
+					//OpenFileId Open(char *name, int type)
+					//name: Thanh ghi so 4
+					//type: Thanh ghi so 5
+
+					int nameAddr = kernel->machine->ReadRegister(4);
+					int type = kernel->machine->ReadRegister(5);
+					char* fileName;
+					if (kernel->fileSystem->index > 10){
+						kernel->machine->WriteRegister(2, -1);
+						delete[] fileName;
+						break;
+					}
+					fileName = User2System(nameAddr,256);
+					if (type == 0 || type == 1){
+						if (kernel->fileSystem->openFile[kernel->fileSystem->index] == kernel->fileSystem->Open(fileName, type)){
+							cerr << "Open file " << fileName <<" success \n";
+							kernel->machine->WriteRegister(2, kernel->fileSystem->index-1);
+						} else {
+							cerr << "Can not open file "<<fileName<<"\n";
+							kernel->machine->WriteRegister(2, -1);
+						}
+					}
+					else if (strcmp(fileName,"stdin") == 0){
+						cerr <<"Stdin mode \n";
+						kernel->machine->WriteRegister(2, 0);
+					}
+					else if (strcmp(fileName, "stdout") == 0){
+						cerr <<"Stdout mode \n";
+						kernel->machine->WriteRegister(2, 1);
+					}
+					if (fileName)
+						delete[] fileName;
+
+					/* Modify return point */
+					increasePC();
+
+					return;
+		
+					ASSERTNOTREACHED();
+				}
+					break;
+
+				case SC_Close:{
+					int nameAddr = kernel->machine->ReadRegister(4);
+					int index = kernel->fileSystem->index;
+					if (nameAddr >= 0 && nameAddr <= 9 && index >= nameAddr){
+						if (kernel->fileSystem->openFile[nameAddr]){
+							delete kernel->fileSystem->openFile[nameAddr];
+							kernel->fileSystem->openFile[nameAddr] == NULL;
+							kernel->machine->WriteRegister(2, 0);
+							cerr<<"Close file success \n";
+						}
+					}
+					cerr<<"Close file fail \n";
+					kernel->machine->WriteRegister(2, -1);
+
+					/* Modify return point */
+					increasePC();
+
+					return;
+		
+					ASSERTNOTREACHED();
+				}
 					break;
 
 				default:

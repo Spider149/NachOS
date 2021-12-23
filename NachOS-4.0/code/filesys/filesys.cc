@@ -77,7 +77,6 @@
 //
 //	"format" -- should we initialize the disk?
 //----------------------------------------------------------------------
-
 FileSystem::FileSystem(bool format)
 { 
     DEBUG(dbgFile, "Initializing the file system.");
@@ -140,6 +139,19 @@ FileSystem::FileSystem(bool format)
         freeMapFile = new OpenFile(FreeMapSector);
         directoryFile = new OpenFile(DirectorySector);
     }
+
+    openFile = new OpenFile*[10];
+    index = 0;
+    for (int i = 0; i < 10; ++i)
+        openFile[i] = NULL;
+    this->Create("stdin", 0);
+    this->Create("stdout", 0);
+    OpenFile* temp = this->Open("stdin", 2);
+    openFile[0] = temp;
+    temp = this->Open("stdout", 3);
+    openFile[1] = temp;
+    index = 1;
+    delete temp;
 }
 
 //----------------------------------------------------------------------
@@ -227,16 +239,34 @@ OpenFile *
 FileSystem::Open(char *name)
 { 
     Directory *directory = new Directory(NumDirEntries);
-    OpenFile *openFile = NULL;
+    OpenFile *openfile = NULL;
     int sector;
 
     DEBUG(dbgFile, "Opening file" << name);
     directory->FetchFrom(directoryFile);
     sector = directory->Find(name); 
     if (sector >= 0) 		
-	openFile = new OpenFile(sector);	// name was found in directory 
+	    openfile = new OpenFile(sector);	// name was found in directory 
     delete directory;
-    return openFile;				// return NULL if not found
+    index++;
+    return openFile[index-1];				// return NULL if not found
+}
+
+OpenFile *
+FileSystem::Open(char *name, int type)
+{
+    Directory *directory = new Directory(NumDirEntries);\
+    OpenFile *openfile = NULL;
+    int sector;
+
+    DEBUG(dbgFile, "Opening file" << name);
+    directory->FetchFrom(directoryFile);
+    sector = directory->Find(name); 
+    if (sector >= 0) 		
+	    openFile[index] = new OpenFile(sector);	// name was found in directory 
+    delete directory;
+    index++;
+    return openFile[index-1];				// return NULL if not found
 }
 
 //----------------------------------------------------------------------

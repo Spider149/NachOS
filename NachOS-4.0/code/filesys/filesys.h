@@ -37,35 +37,77 @@
 #include "sysdep.h"
 #include "openfile.h"
 
+typedef int openFileID;
 #ifdef FILESYS_STUB 		// Temporarily implement file system calls as 
 				// calls to UNIX, until the real file system
 				// implementation is available
 class FileSystem {
   public:
-    FileSystem() {}
 
-    bool Create(char *name) {
-	int fileDescriptor = OpenForWrite(name);
+	//Khai bao bien kiem tra xem file co dang mo hay khong, vi tri
+	OpenFile** openFile;
+	int index;
 
-	if (fileDescriptor == -1) return FALSE;
-	Close(fileDescriptor); 
-	return TRUE; 
+	FileSystem(){}
+    FileSystem(bool format) {
+		openFile = new OpenFile*[10];
+		index = 0;
+		for (int i = 0; i < 10; ++i)
+			openFile[i] = NULL;
+		this->Create("stdin", 0);
+		this->Create("stdout", 0);
+		
+		OpenFile* temp = this->Open("stdin", 0);
+		openFile[0] = temp;
+		openFile[0]->type = 1;
+		temp = this->Open("stdout", 0);
+		openFile[1] = temp;
+		openFile[1]->type=0;
+		index = 1;
+		delete temp;
 	}
 
-    OpenFile* Open(char *name) {
+    bool Create(char *name, int initialSize) {
+		int fileDescriptor = OpenForWrite(name);
+
+		if (fileDescriptor == -1) return FALSE;
+		Close(fileDescriptor); 
+		return TRUE; 
+	}
+
+	OpenFile* Open(char *name) {
 	  int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 	  if (fileDescriptor == -1) return NULL;
+	  index++;
 	  return new OpenFile(fileDescriptor);
-      }
+    }
+
+	//Overload lai ham Open de mo file voi 2 type khac nhau
+    OpenFile* Open(char *name, int type) {
+	  int fileDescriptor = OpenForReadWrite(name, FALSE);
+
+	  if (fileDescriptor == -1) return NULL;
+	  index++;
+	  return new OpenFile(fileDescriptor, type);
+    }
 
     bool Remove(char *name) { return Unlink(name) == 0; }
 
+	~FileSystem(){
+		for (int i = 0; i < 10; ++i)
+			if (openFile[i] != NULL)
+				delete openFile[i];
+		delete[] openFile;
+	}
 };
 
 #else // FILESYS
 class FileSystem {
   public:
+	OpenFile** openFile;
+	int index;
+	FileSystem();
     FileSystem(bool format);		// Initialize the file system.
 					// Must be called *after* "synchDisk" 
 					// has been initialized.
@@ -73,10 +115,11 @@ class FileSystem {
 					// the disk, so initialize the directory
     					// and the bitmap of free blocks.
 
-    bool Create(char *name, int initialSize);  	
+    bool Create(char *name,int initialSize);  	
 					// Create a file (UNIX creat)
 
     OpenFile* Open(char *name); 	// Open a file (UNIX open)
+	OpenFile* Open(char *name, int type);
 
     bool Remove(char *name);  		// Delete a file (UNIX unlink)
 
