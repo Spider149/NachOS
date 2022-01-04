@@ -82,6 +82,13 @@ class Thread {
     void *machineState[MachineStateSize];  // all registers except for stackTop
 
   public:
+    //FileTable* mTable;
+    int processID;
+    int exitStatus;
+    void freeSpace(){
+      if (space != 0)
+        delete space;
+    }
     Thread(char* debugName);		// initialize a Thread 
     ~Thread(); 				// deallocate a Thread
 					// NOTE -- thread being deleted
