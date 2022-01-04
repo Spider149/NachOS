@@ -25,6 +25,7 @@
 #include "main.h"
 #include "syscall.h"
 #include "ksyscall.h"
+#include "synchcons.h"
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -50,6 +51,7 @@
 
 
 //c. Tang gia tri bien Program Counter (PC) len 4 de tiep tuc nap lenh
+
 void increasePC(){
 	//PrevPCReg <- PCReg
 	int counter = kernel->machine->ReadRegister(PCReg);
@@ -65,6 +67,7 @@ void
 ExceptionHandler(ExceptionType which)
 {
     int type = kernel->machine->ReadRegister(2);
+	SynchConsole* gSynchConsole = new SynchConsole();
 	int result;
 
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
@@ -224,12 +227,133 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 				}
 					break;
+				
+				case SC_Read:{
+					int virtAddr = kernel->machine->ReadRegister(4); 
+					int charcount = kernel->machine->ReadRegister(5); 
+					int id = kernel->machine->ReadRegister(6);
+					char* buffer;
+					int newPos;
+					int oldPos;
+
+					if (id < 0 || id > 9) {
+						printf("\nFile id nam ngoai bang mo ta file");
+						kernel->machine->WriteRegister(2, -1);
+						increasePC();
+						return;
+					}
+
+					if (kernel->fileSystem->openFile[id] == NULL)
+					{
+						printf("\nFile khong ton tai");
+						kernel->machine->WriteRegister(2, -1);
+						increasePC();
+						return;
+					}
+
+					if (kernel->fileSystem->openFile[id]->type == 3)
+					{
+						printf("\nFile stdout khong the doc");
+						kernel->machine->WriteRegister(2, -1);
+						increasePC();
+						return;
+					}
+
+					oldPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+					buffer = User2System(virtAddr, charcount);
+
+					if (kernel->fileSystem->openFile[id]->type == 2)
+					{
+						int size = gSynchConsole->Read(buffer, charcount); 
+						System2User(virtAddr, size, buffer);
+						kernel->machine->WriteRegister(2, size);
+						delete buffer;
+						increasePC();
+						return;
+					} 
+
+					if ((kernel->fileSystem->openFile[id]->Read(buffer, charcount)) > 0)
+					{
+						newPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+						System2User(virtAddr, newPos - oldPos, buffer); 
+						kernel->machine->WriteRegister(2, newPos - oldPos);
+					}
+					else kernel->machine->WriteRegister(2, -2);
+					delete buffer;
+
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+				}
+					break;
+
+				case SC_Write:
+				{
+					int virtAddr = kernel->machine->ReadRegister(4); 
+					int charcount =  kernel->machine->ReadRegister(5);
+					int id =  kernel->machine->ReadRegister(6);
+					int oldPos;
+					int newPos;
+					char *buffer;
+					if (id < 0 || id > 9) 
+					{
+						printf("\nFile id nam ngoai bang mo ta file");
+						kernel->machine->WriteRegister(2, -1);
+						increasePC();
+						return;
+					}
+					if (kernel->fileSystem->openFile[id] == NULL)
+					{
+						printf("\nFile khong ton tai");
+						kernel->machine->WriteRegister(2, -1);
+						increasePC();
+						return;
+					}
+					if (kernel->fileSystem->openFile[id]->type == 1 || kernel->fileSystem->openFile[id]->type == 2)
+					{
+						printf("\nKhong the ghi vao file chi doc va file stdin");
+						kernel->machine->WriteRegister(2, -1);
+						increasePC();
+						return;
+					}
+					oldPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+					buffer = User2System(virtAddr, charcount);
+
+					if (kernel->fileSystem->openFile[id]->type == 0)
+					{
+						if ((kernel->fileSystem->openFile[id]->Write(buffer, charcount)) > 0)
+						{
+							newPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+							kernel->machine->WriteRegister(2, newPos - oldPos);
+							delete buffer;
+							increasePC();
+							return;
+						}
+					}
+					if (kernel->fileSystem->openFile[id]->type == 3)
+					{
+						int i = 0;
+						while (buffer[i] != 0 && buffer[i] != '\n') 
+						{
+							gSynchConsole->Write(buffer + i, 1); 
+							i++;
+						}
+						buffer[i] = '\n';
+						gSynchConsole->Write(buffer + i, 1);
+						kernel->machine->WriteRegister(2, i - 1);
+						delete buffer;
+						increasePC();
+						return;
+					}
+				}
 
 				default:
 					cerr << "Unexpected system call " << type << "\n";
 					break;
 			}
 			break;
+
+		
 
 		// No valid translation found
 		case PageFaultException:
