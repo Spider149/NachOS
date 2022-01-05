@@ -8,33 +8,17 @@ class Sem
     public:
         // Khoi tao doi tuong Sem. Gan gia tri ban dau la null
         // nho khoi tao bm su dung
-        Sem(char *na, int i)
-        {
-            strcpy(this->name, na);
-            sem = new Semaphore(na, i);
-        }
+        Sem(char *na, int i);
 
         // Huy cac doi tuong da tao
-        ~Sem()
-        {
-            delete sem;
-        }
+        ~Sem();
 
         // Thuc hien thao tac cho
-        void wait()
-        {
-            sem->P();
-        }
+        void wait();
 
         // Thuc hien thao tac giai phong Semaphore
-        void signal()
-        {
-            sem->V();
-        }
+        void signal();
         
         // Tra ve ten cua Semaphore
-        char *GetName()
-        {
-            return name;
-        }
+        char *GetName();
 };
