@@ -1,4 +1,8 @@
+#ifndef SEM_H
+#define SEM_H
+
 #include "synch.h"
+
 class Sem
 {
     private:
@@ -22,3 +26,6 @@ class Sem
         // Tra ve ten cua Semaphore
         char *GetName();
 };
+
+
+#endif
