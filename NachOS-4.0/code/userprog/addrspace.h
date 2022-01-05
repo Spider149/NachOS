@@ -21,7 +21,9 @@
 class AddrSpace {
   public:
     AddrSpace();			// Create an address space.
+    AddrSpace(char* fileName);
     ~AddrSpace();			// De-allocate an address space
+
 
     bool Load(char *fileName);		// Load a program into addr space from
                                         // a file
@@ -39,6 +41,8 @@ class AddrSpace {
     // is 0 for Read, 1 for Write.
     ExceptionType Translate(unsigned int vaddr, unsigned int *paddr, int mode);
 
+    bool usedPhyPage[NumPhysPages];
+
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
@@ -47,6 +51,7 @@ class AddrSpace {
 
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code
+    bool load(char* fileName);
 
 };
 

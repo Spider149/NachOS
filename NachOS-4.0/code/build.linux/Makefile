@@ -285,6 +285,7 @@ THREAD_O = alarm.o kernel.o main.o scheduler.o synch.o thread.o
 USERPROG_H = ../userprog/addrspace.h\
 	../userprog/syscall.h\
 	../userprog/synchconsole.h\
+	../userprog/sem.h\
 	../userprog/noff.h
 
 USERPROG_C = ../userprog/addrspace.cc\
