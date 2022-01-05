@@ -100,7 +100,7 @@ Kernel::Initialize()
     machine = new Machine(debugUserProg);
     synchConsoleIn = new SynchConsoleInput(consoleIn); // input from stdin
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
-    //addrLock = new Semaphore("addrLock", 1);
+    addrLock = new Semaphore("addrLock", 1);
     synchDisk = new SynchDisk();    //
 #ifdef FILESYS_STUB
     fileSystem = new FileSystem();
@@ -131,7 +131,7 @@ Kernel::~Kernel()
     delete fileSystem;
     delete postOfficeIn;
     delete postOfficeOut;
-    //delete addrLock;
+    delete addrLock;
     
     Exit(0);
 }

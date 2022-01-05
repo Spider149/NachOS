@@ -286,6 +286,7 @@ USERPROG_H = ../userprog/addrspace.h\
 	../userprog/syscall.h\
 	../userprog/synchconsole.h\
 	../userprog/sem.h\
+	../userprog/stable.h\
 	../userprog/noff.h
 
 USERPROG_C = ../userprog/addrspace.cc\

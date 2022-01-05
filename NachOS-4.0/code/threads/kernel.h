@@ -24,6 +24,7 @@ class PostOfficeOutput;
 class SynchConsoleInput;
 class SynchConsoleOutput;
 class SynchDisk;
+class Semaphore;
 
 class Kernel {
   public:
@@ -56,7 +57,7 @@ class Kernel {
     FileSystem *fileSystem;     
     PostOfficeInput *postOfficeIn;
     PostOfficeOutput *postOfficeOut;
-    //Semaphore *addrLock;
+    Semaphore *addrLock;
 
     int hostName;               // machine identifier
 
