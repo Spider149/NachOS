@@ -17,6 +17,7 @@
 #include "synchconsole.h"
 #include "synchdisk.h"
 #include "post.h"
+#include "bitmap.h"
 
 //----------------------------------------------------------------------
 // Kernel::Kernel
@@ -101,6 +102,7 @@ Kernel::Initialize()
     synchConsoleIn = new SynchConsoleInput(consoleIn); // input from stdin
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
     addrLock = new Semaphore("addrLock", 1);
+    gPhysPageBitmap = new Bitmap(256);
     synchDisk = new SynchDisk();    //
 #ifdef FILESYS_STUB
     fileSystem = new FileSystem();
@@ -132,7 +134,7 @@ Kernel::~Kernel()
     delete postOfficeIn;
     delete postOfficeOut;
     delete addrLock;
-    
+    delete gPhysPageBitmap;
     Exit(0);
 }
 
