@@ -12,9 +12,10 @@ class STable {
     Sem* semTab[MAX_SEMAPHORE];
     // quan ly slot trong
     // quan ly toi da 10 doi tuong Sem
+    
+    int FindByName(char* name);
+    
   public:
-    // khoi tao size đoi tuong Sem đe quan ly 10 Semaphore. Gan gia tri ban đau la null
-    // nho khoi tao bm đe su dung
     STable();
 
     ~STable();
