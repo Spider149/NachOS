@@ -67,7 +67,6 @@ void
 ExceptionHandler(ExceptionType which)
 {
     int type = kernel->machine->ReadRegister(2);
-	// SynchConsole* gSynchConsole = new SynchConsole();
 	int result;
 
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
@@ -264,10 +263,16 @@ ExceptionHandler(ExceptionType which)
 
 					if (kernel->fileSystem->openFile[id]->type == 2)
 					{
-						//int size = gSynchConsole->Read(buffer, charcount); 
-						int size = kernel->fileSystem->openFile[id]->Read(buffer,charcount);
-						System2User(virtAddr, size, buffer);
-						kernel->machine->WriteRegister(2, size);
+						int i = 0;
+						while(i < charcount){
+							char c = kernel->synchConsoleIn->GetChar();
+							if(c=='\n' || c=='\0') break;
+							buffer[i] = c;
+							i++;
+						}
+						buffer[i]='\0';
+						System2User(virtAddr, i+1, buffer);
+						kernel->machine->WriteRegister(2, i+1);
 						delete buffer;
 						increasePC();
 						return;
@@ -334,16 +339,15 @@ ExceptionHandler(ExceptionType which)
 					if (kernel->fileSystem->openFile[id]->type == 3)
 					{
 						int i = 0;
-						while (buffer[i] != 0 && buffer[i] != '\n') 
-						{
-							kernel->fileSystem->openFile[id]->Write(buffer+i,1);
-							//gSynchConsole->Write(buffer + i, 1); 
-							i++;
+						while(i<charcount){
+							if (buffer[i] != '\0' && buffer[i] != '\n') 
+							{
+								kernel->synchConsoleOut->PutChar(buffer[i]);
+								i++;
+							}
+							else break;
 						}
-						buffer[i] = '\n';
-						kernel->fileSystem->openFile[id]->Write(buffer+i,1);
-						//gSynchConsole->Write(buffer + i, 1);
-						kernel->machine->WriteRegister(2, i - 1);
+						kernel->machine->WriteRegister(2, i);
 						delete buffer;
 						increasePC();
 						return;
