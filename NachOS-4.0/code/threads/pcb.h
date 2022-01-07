@@ -3,6 +3,7 @@
 
 #include "thread.h"
 #include "synch.h"
+#include "filetable.h"
 
 class Semaphore;
 
@@ -19,6 +20,8 @@ private:
     int numwait;                // số tiến trình đã join
     char FileName[64];          // Ten cua tien trinh
     Thread* thread;             // Tien trinh cua chuong trinh
+
+    FileTable* fileTable;
 public:
     int parentID;               // ID cua tien trinh cha
 
@@ -44,6 +47,14 @@ public:
 
     void SetFileName(char* fn);    // Set ten tien trinh
     char* GetFileName();        // Tra ve ten tien trinh
+
+    bool Create(char *name, int initialSize);
+    int FindFreeSlot();
+    OpenFile* getOpenFileId(int id);
+    OpenFile* Open(char* name);
+    OpenFile* Open(char* name, int type);
+    void Close(int id);
+    char* getFileName();
 };
 
 #endif // PCB_H

@@ -1,6 +1,9 @@
 #include "filetable.h"
 #include "stdio.h"
 #include "utility.h"
+#include "sysdep.h"
+#include "copyright.h"
+#include "../filesys/openfile.h"
     
 FileTable::FileTable(){
     fileTable = new OpenFile*[10];
@@ -19,6 +22,10 @@ bool FileTable::Create(char *name, int initialSize) {
     if (fileDescriptor == -1) return FALSE;
     Close(fileDescriptor); 
     return TRUE; 
+}
+
+OpenFile* FileTable::getOpenFileId(int id){
+    return fileTable[id];
 }
 
 OpenFile* FileTable::Open(char* name, int type){
@@ -49,12 +56,9 @@ bool FileTable::Remove(char* name){
     return Unlink(name) == 0; 
 }
 
-int FileTable::ReadAt(char* buffer, int charcount, OpenFileID id){
-
-}
-    
-int FileTable::WriteAt(char* buffer, int charcount, OpenFileID id){
-
+void FileTable::closeFile(int id){
+    if (fileTable != NULL)
+        fileTable[id] = NULL;
 }
     
 FileTable::~FileTable(){

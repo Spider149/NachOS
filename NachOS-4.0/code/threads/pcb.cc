@@ -3,7 +3,27 @@
 #include "thread.h"
 #include "addrspace.h"
 
-extern void StartProcess_2(int id);
+void StartProcess_2(int id)
+{
+	char* fileName = kernel->pTab->getFileName(id);
+
+	AddrSpace *space;
+	space = new AddrSpace(fileName);
+
+	if(space == NULL)
+	{
+		cerr << "PCB::Exec : Can't create AddSpace. \n";
+		return;
+	}
+
+	kernel->currentThread->space = space;
+
+	space->InitRegisters();		
+	space->RestoreState();		
+
+	kernel->machine->Run();		
+	ASSERT(FALSE);		
+}
 
 PCB::PCB(int id)
 {
@@ -19,6 +39,7 @@ PCB::PCB(int id)
 	this->joinsem = new Semaphore("joinsem",0);
 	this->exitsem = new Semaphore("exitsem",0);
 	this->multex = new Semaphore("multex",1);
+	this->fileTable = new FileTable();
 }
 
 PCB::~PCB()
@@ -116,7 +137,7 @@ int PCB::Exec(char* filename, int id)
 
 	this->thread->processID = id;
 	this->parentID = kernel->currentThread->processID;
- 	//this->thread->Fork(StartProcess_2,id);
+ 	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)id);
 	OpenFile* executable = kernel->fileSystem->Open(filename);
 	AddrSpace* space;
 
@@ -137,3 +158,31 @@ int PCB::Exec(char* filename, int id)
 	return id;
 
 }
+
+bool PCB::Create(char *name, int initialSize) {
+   return fileTable->Create(name, initialSize);
+}
+
+int PCB::FindFreeSlot() {
+   return fileTable->FindFreeSlot();
+}
+
+OpenFile* PCB::getOpenFileId(int id){
+	return fileTable->getOpenFileId(id);
+}
+
+OpenFile* PCB::Open(char* name){
+	return fileTable->Open(name);
+}
+OpenFile* PCB::Open(char* name, int type){
+	return fileTable->Open(name, type);
+
+}
+
+void PCB::Close(int id){
+	fileTable->closeFile(id);
+}
+
+char* PCB::getFileName(){
+	return thread->getName();
+};

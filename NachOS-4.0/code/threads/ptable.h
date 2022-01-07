@@ -29,6 +29,11 @@ public:
     int GetFreeSlot();          // tìm free slot để lưu thông tin cho tiến trình mới
     bool IsExist(int pid);      // kiểm tra tồn tại processID này không?
 
+    PCB* getPCB(int id){
+        return pcb[id];
+    }
     void Remove(int pid);       // khi tiến trình kết thúc, delete processID ra khỏi mảng quản lý nó
+
+    char* getFileName(int id);
 };
 #endif // PTABLE_H

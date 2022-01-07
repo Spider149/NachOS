@@ -1,7 +1,7 @@
 #include "syscall.h"
 
 int main(){
-    //CreateFile("output2.txt");
+    //PrintChar(CreateFile("output4.txt"));
     char c;
     char* a;
     int id = Open("output.txt", 0);

@@ -103,6 +103,8 @@ Kernel::Initialize()
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
     addrLock = new Semaphore("addrLock", 1);
     gPhysPageBitmap = new Bitmap(256);
+    pTab = new PTable(10);
+    semTab  = new STable();
     synchDisk = new SynchDisk();    //
 #ifdef FILESYS_STUB
     fileSystem = new FileSystem();

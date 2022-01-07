@@ -195,7 +195,18 @@ ExceptionHandler(ExceptionType which)
 					}
 					DEBUG('a', "\n Finish reading filename.");
 					
-					if (!kernel->fileSystem->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
+					/*if (!kernel->fileSystem->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
+					{
+						//Tao file that bai
+						printf("\n Error create file '%s'", filename);
+						kernel->machine->WriteRegister(2, -1);
+						delete filename;
+						increasePC();
+						return;
+						//break;
+					}*/
+
+					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
 					{
 						//Tao file that bai
 						printf("\n Error create file '%s'", filename);
@@ -225,7 +236,7 @@ ExceptionHandler(ExceptionType which)
 					int freeSlot;
 					fileName = User2System(nameAddr,256);
 
-					freeSlot = kernel->fileSystem->FindFreeSlot();
+					freeSlot = kernel->pTab->getPCB(kernel->currentThread->processID)->FindFreeSlot();
 					if (freeSlot == -1){
 						kernel->machine->WriteRegister(2, -1);
 						delete[] fileName;
@@ -233,7 +244,8 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 					if (type == 0 || type == 1){
-						if ((kernel->fileSystem->openFile[freeSlot] = kernel->fileSystem->Open(fileName, type)) != NULL){
+						OpenFile* temp = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(freeSlot);
+						if (( temp = kernel->pTab->getPCB(kernel->currentThread->processID)->Open(fileName, type)) != NULL){
 							cerr << "Open file " << fileName <<" success \n";
 							kernel->machine->WriteRegister(2, freeSlot);
 						} 
@@ -260,9 +272,8 @@ ExceptionHandler(ExceptionType which)
 					int nameAddr = kernel->machine->ReadRegister(4);
 					int index = kernel->fileSystem->index;
 					if (nameAddr >= 0 && nameAddr <= 9 && index >= nameAddr){
-						if (kernel->fileSystem->openFile[nameAddr]){
-							delete kernel->fileSystem->openFile[nameAddr];
-							kernel->fileSystem->openFile[nameAddr] == NULL;
+						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(nameAddr)){
+							kernel->pTab->getPCB(kernel->currentThread->processID)->Close(nameAddr);
 							kernel->machine->WriteRegister(2, 0);
 							cerr<<"Close file success \n";
 							increasePC();
@@ -296,7 +307,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->fileSystem->openFile[id] == NULL)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id) == NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
@@ -304,7 +315,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->fileSystem->openFile[id]->type == 3)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 3)
 					{
 						printf("\nFile stdout khong the doc");
 						kernel->machine->WriteRegister(2, -1);
@@ -312,10 +323,10 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					oldPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->fileSystem->openFile[id]->type == 2)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 2)
 					{
 						int i = 0;
 						while(i < charcount){
@@ -332,9 +343,9 @@ ExceptionHandler(ExceptionType which)
 						return;
 					} 
 
-					if ((kernel->fileSystem->openFile[id]->Read(buffer, charcount)) > 0)
+					if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->Read(buffer, charcount)) > 0)
 					{
-						newPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+						newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
 						System2User(virtAddr, newPos - oldPos, buffer); 
 						kernel->machine->WriteRegister(2, newPos - oldPos);
 					}
@@ -362,35 +373,35 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					if (kernel->fileSystem->openFile[id] == NULL)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)== NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					if (kernel->fileSystem->openFile[id]->type == 1 || kernel->fileSystem->openFile[id]->type == 2)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 1 || kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 2)
 					{
 						printf("\nKhong the ghi vao file chi doc va file stdin");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					oldPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->fileSystem->openFile[id]->type == 0)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 0)
 					{
-						if ((kernel->fileSystem->openFile[id]->Write(buffer, charcount)) > 0)
+						if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->Write(buffer, charcount)) > 0)
 						{
-							newPos = kernel->fileSystem->openFile[id]->GetCurrentPos();
+							newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
 							kernel->machine->WriteRegister(2, newPos - oldPos);
 							delete buffer;
 							increasePC();
 							return;
 						}
 					}
-					if (kernel->fileSystem->openFile[id]->type == 3)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 3)
 					{
 						int i = 0;
 						while(i<charcount){
@@ -414,7 +425,7 @@ ExceptionHandler(ExceptionType which)
 				case SC_CreateSemaphore:{
 					int virtAddr = kernel->machine->ReadRegister(4);
 					int semVal = kernel->machine->ReadRegister(5);
-					char* name = User2System(virtAddr, 256);
+					char* name = User2System(virtAddr, 33);
 					if (name == NULL){
 						DEBUG('a', "Not enough memory in system \n");
 						cerr << "Not enough memory in system \n";
@@ -449,7 +460,7 @@ ExceptionHandler(ExceptionType which)
 				*/
 				case SC_Wait:{
 					int virtAddr = kernel->machine->ReadRegister(4);
-					char* name = User2System(virtAddr, 256);
+					char* name = User2System(virtAddr, 33);
 					if (name == NULL){
 						DEBUG('a', "Not enough memory in system \n");
 						cerr << "Not enough memory in system \n";
@@ -484,7 +495,7 @@ ExceptionHandler(ExceptionType which)
 				*/
 				case SC_Signal:{
 					int virtAddr = kernel->machine->ReadRegister(4);
-					char* name = User2System(virtAddr, 256);
+					char* name = User2System(virtAddr, 33);
 					if (name == NULL){
 						DEBUG('a', "Not enough memory in system \n");
 						cerr << "Not enough memory in system \n";
@@ -530,7 +541,7 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					OpenFile *oFile = kernel->fileSystem->Open(name);
+					OpenFile *oFile = kernel->pTab->getPCB(kernel->currentThread->processID)->Open(name);
 					if (oFile == NULL)
 					{
 						printf("\nExec:: Can't open this file.");
@@ -551,7 +562,33 @@ ExceptionHandler(ExceptionType which)
 				}
 				break;
 
+				case SC_Join:{
+					int id = kernel->machine->ReadRegister(4);
+					int res = kernel->pTab->JoinUpdate(id);
 
+					kernel->machine->WriteRegister(2, res);
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+				}
+				break;
+
+				case SC_Exit:{
+					int status = kernel->machine->ReadRegister(4);
+
+					if(status != 0){
+						increasePC();
+						return;
+					}
+					int res = kernel->pTab->ExitUpdate(status);
+
+					kernel->currentThread->freeSpace();
+					kernel->currentThread->Finish();
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+				}
+				break;
 				default:
 					cerr << "Unexpected system call " << type << "\n";
 					break;

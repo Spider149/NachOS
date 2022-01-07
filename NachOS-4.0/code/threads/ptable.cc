@@ -166,5 +166,9 @@ void PTable::Remove(int pid)
 		delete pcb[pid];
 }
 
+char* PTable::getFileName(int id){
+	return pcb[id]->getFileName();
+}
+
 
 

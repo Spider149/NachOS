@@ -3,7 +3,7 @@
 int
 main()
 {
-    SpaceId newProc;
+    /*SpaceId newProc;
     OpenFileId input = ConsoleInput;
     OpenFileId output = ConsoleOutput;
     char prompt[2], ch, buffer[60];
@@ -30,6 +30,7 @@ main()
 		newProc = Exec(buffer);
 		Join(newProc);
 	}
-    }
+    }*/
+    return;
 }
 
