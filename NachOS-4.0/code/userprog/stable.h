@@ -6,13 +6,14 @@
 #include "sem.h"
 #include "bitmap.h"
 
+class Sem;
+
 class STable {
   private:
     Bitmap* bm;
     Sem* semTab[MAX_SEMAPHORE];
     // quan ly slot trong
-    // quan ly toi da 10 doi tuong Sem
-    
+    // quan ly toi da 10 doi tuong Semaphore
     int FindByName(char* name);
     
   public:

@@ -411,6 +411,48 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 				}
+					break;
+
+				case SC_Join:
+				{       
+					// int Join(SpaceId id)
+					// Input: id dia chi cua thread
+					// Output: 
+					int id = kernel->machine->ReadRegister(4);
+					
+					int res = kernel->pTab->JoinUpdate(id);
+					
+					kernel->machine->WriteRegister(2, res);
+					increasePC();
+					return;
+				}
+					break;
+
+				case SC_Exit:
+				{
+					//void Exit(int status);
+					// Input: status code
+					int exitStatus = kernel->machine->ReadRegister(4);
+
+					if(exitStatus != 0)
+					{
+						increasePC();
+						return;
+						
+					}			
+					
+					int res = kernel->pTab->ExitUpdate(exitStatus);
+					//machine->WriteRegister(2, res);
+
+					kernel->currentThread->freeSpace();
+					kernel->currentThread->Finish();
+					increasePC();
+					return; 
+						
+				}
+					break;
+
+
 
 				default:
 					cerr << "Unexpected system call " << type << "\n";

@@ -3,6 +3,8 @@
 
 #include "synch.h"
 
+class Semaphore;
+
 class Sem
 {
     private:

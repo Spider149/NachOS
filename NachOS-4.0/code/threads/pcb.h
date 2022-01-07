@@ -4,6 +4,8 @@
 #include "thread.h"
 #include "synch.h"
 
+class Semaphore;
+
 // Process Control Block
 class PCB
 {
