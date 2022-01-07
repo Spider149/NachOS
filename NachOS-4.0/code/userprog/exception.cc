@@ -165,6 +165,9 @@ ExceptionHandler(ExceptionType which)
 					break;
 
 				case SC_CreateFile: {
+					// Input: Dia chi tu vung nho user cua ten file
+					// Output: -1 = Loi, 0 = Thanh cong
+					// Chuc nang: Tao ra file voi tham so la ten file
 					int virtAddr;
 					char* filename;
 					DEBUG('a', "\n SC_CreateFile call ...");
@@ -180,8 +183,9 @@ ExceptionHandler(ExceptionType which)
 						printf("\n File name is not valid");
 						DEBUG('a', "\n File name is not valid");
 						kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
-						increasePC();
-						return;
+						//IncreasePC();
+						//return;
+						break;
 					}
 					
 					if (filename == NULL)  //Neu khong doc duoc
@@ -190,8 +194,9 @@ ExceptionHandler(ExceptionType which)
 						DEBUG('a', "\n Not enough memory in system");
 						kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
 						delete filename;
-						increasePC();
-						return;
+						//IncreasePC();
+						//return;
+						break;
 					}
 					DEBUG('a', "\n Finish reading filename.");
 					
@@ -201,18 +206,18 @@ ExceptionHandler(ExceptionType which)
 						printf("\n Error create file '%s'", filename);
 						kernel->machine->WriteRegister(2, -1);
 						delete filename;
-						increasePC();
-						return;
-						//break;
+						//IncreasePC();
+						//return;
+						break;
 					}
 					
 					//Tao file thanh cong
 					kernel->machine->WriteRegister(2, 0);
 					delete filename;
-					increasePC(); //Day thanh ghi lui ve sau de tiep tuc ghi
-					return;
-				}
+					//IncreasePC(); //Day thanh ghi lui ve sau de tiep tuc ghi
+					//return;
 					break;
+				}
 
 				case SC_Open:{
 					//OpenFileId Open(char *name, int type)
