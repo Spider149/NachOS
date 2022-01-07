@@ -26,6 +26,9 @@
 #include "syscall.h"
 #include "ksyscall.h"
 #include "synchconsole.h"
+
+#define MaxFileLength 32 // Do dai quy uoc cho file name
+
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -67,7 +70,6 @@ void
 ExceptionHandler(ExceptionType which)
 {
     int type = kernel->machine->ReadRegister(2);
-	// SynchConsole* gSynchConsole = new SynchConsole();
 	int result;
 
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
@@ -161,6 +163,61 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 
 					break;
+
+				case SC_CreateFile: {
+					// Input: Dia chi tu vung nho user cua ten file
+					// Output: -1 = Loi, 0 = Thanh cong
+					// Chuc nang: Tao ra file voi tham so la ten file
+					int virtAddr;
+					char* filename;
+					DEBUG('a', "\n SC_CreateFile call ...");
+					DEBUG('a', "\n Reading virtual address of filename");
+
+					virtAddr = kernel->machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
+					DEBUG('a', "\n Reading filename.");
+					
+					//Sao chep khong gian bo nho User sang System, voi do dang toi da la (32 + 1) bytes
+					filename = User2System(virtAddr, MaxFileLength + 1);
+					if (strlen(filename) == 0)
+					{
+						printf("\n File name is not valid");
+						DEBUG('a', "\n File name is not valid");
+						kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
+						//IncreasePC();
+						//return;
+						break;
+					}
+					
+					if (filename == NULL)  //Neu khong doc duoc
+					{
+						printf("\n Not enough memory in system");
+						DEBUG('a', "\n Not enough memory in system");
+						kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
+						delete filename;
+						//IncreasePC();
+						//return;
+						break;
+					}
+					DEBUG('a', "\n Finish reading filename.");
+					
+					if (!kernel->fileSystem->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
+					{
+						//Tao file that bai
+						printf("\n Error create file '%s'", filename);
+						kernel->machine->WriteRegister(2, -1);
+						delete filename;
+						//IncreasePC();
+						//return;
+						break;
+					}
+					
+					//Tao file thanh cong
+					kernel->machine->WriteRegister(2, 0);
+					delete filename;
+					//IncreasePC(); //Day thanh ghi lui ve sau de tiep tuc ghi
+					//return;
+					break;
+				}
 
 				case SC_Open:{
 					//OpenFileId Open(char *name, int type)
@@ -264,10 +321,16 @@ ExceptionHandler(ExceptionType which)
 
 					if (kernel->fileSystem->openFile[id]->type == 2)
 					{
-						//int size = gSynchConsole->Read(buffer, charcount); 
-						int size = kernel->fileSystem->openFile[id]->Read(buffer,charcount);
-						System2User(virtAddr, size, buffer);
-						kernel->machine->WriteRegister(2, size);
+						int i = 0;
+						while(i < charcount){
+							char c = kernel->synchConsoleIn->GetChar();
+							if(c=='\n' || c=='\0') break;
+							buffer[i] = c;
+							i++;
+						}
+						buffer[i]='\0';
+						System2User(virtAddr, i+1, buffer);
+						kernel->machine->WriteRegister(2, i+1);
 						delete buffer;
 						increasePC();
 						return;
@@ -334,16 +397,15 @@ ExceptionHandler(ExceptionType which)
 					if (kernel->fileSystem->openFile[id]->type == 3)
 					{
 						int i = 0;
-						while (buffer[i] != 0 && buffer[i] != '\n') 
-						{
-							kernel->fileSystem->openFile[id]->Write(buffer+i,1);
-							//gSynchConsole->Write(buffer + i, 1); 
-							i++;
+						while(i<charcount){
+							if (buffer[i] != '\0' && buffer[i] != '\n') 
+							{
+								kernel->synchConsoleOut->PutChar(buffer[i]);
+								i++;
+							}
+							else break;
 						}
-						buffer[i] = '\n';
-						kernel->fileSystem->openFile[id]->Write(buffer+i,1);
-						//gSynchConsole->Write(buffer + i, 1);
-						kernel->machine->WriteRegister(2, i - 1);
+						kernel->machine->WriteRegister(2, i);
 						delete buffer;
 						increasePC();
 						return;
