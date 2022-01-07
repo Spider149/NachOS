@@ -56,15 +56,9 @@ class FileSystem {
 			openFile[i] = NULL;
 		this->Create("stdin", 0);
 		this->Create("stdout", 0);
-		
-		OpenFile* temp = this->Open("stdin", 0);
-		openFile[0] = temp;
-		openFile[0]->type = 1;
-		temp = this->Open("stdout", 0);
-		openFile[1] = temp;
-		openFile[1]->type=0;
-		index = 1;
-		delete temp;
+		openFile[index++] = this->Open("stdin", 2);
+		openFile[index++] = this->Open("stdout", 3);	
+
 	}
 
     bool Create(char *name, int initialSize) {
@@ -79,7 +73,7 @@ class FileSystem {
 	  int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 	  if (fileDescriptor == -1) return NULL;
-	  index++;
+	  //index++;
 	  return new OpenFile(fileDescriptor);
     }
 
@@ -88,9 +82,18 @@ class FileSystem {
 	  int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 	  if (fileDescriptor == -1) return NULL;
-	  index++;
+	  //index++;
 	  return new OpenFile(fileDescriptor, type);
     }
+
+	//Ham tim slot trong
+	int FindFreeSlot(){
+		for (int i = 2; i < 15; ++i){
+			if(openFile[i] == NULL)
+				return i;
+		}
+		return -1;
+	}
 
     bool Remove(char *name) { return Unlink(name) == 0; }
 
@@ -121,6 +124,8 @@ class FileSystem {
     OpenFile* Open(char *name); 	// Open a file (UNIX open)
 	OpenFile* Open(char *name, int type);
 
+	int FindFreeSlot();
+	
     bool Remove(char *name);  		// Delete a file (UNIX unlink)
 
     void List();			// List all the files in the file system
