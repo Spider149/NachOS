@@ -165,6 +165,9 @@ ExceptionHandler(ExceptionType which)
 					break;
 
 				case SC_CreateFile: {
+					// Input: Dia chi tu vung nho user cua ten file
+					// Output: -1 = Loi, 0 = Thanh cong
+					// Chuc nang: Tao ra file voi tham so la ten file
 					int virtAddr;
 					char* filename;
 					DEBUG('a', "\n SC_CreateFile call ...");
@@ -180,8 +183,9 @@ ExceptionHandler(ExceptionType which)
 						printf("\n File name is not valid");
 						DEBUG('a', "\n File name is not valid");
 						kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
-						increasePC();
-						return;
+						//IncreasePC();
+						//return;
+						break;
 					}
 					
 					if (filename == NULL)  //Neu khong doc duoc
@@ -190,8 +194,9 @@ ExceptionHandler(ExceptionType which)
 						DEBUG('a', "\n Not enough memory in system");
 						kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
 						delete filename;
-						increasePC();
-						return;
+						//IncreasePC();
+						//return;
+						break;
 					}
 					DEBUG('a', "\n Finish reading filename.");
 					
@@ -201,18 +206,18 @@ ExceptionHandler(ExceptionType which)
 						printf("\n Error create file '%s'", filename);
 						kernel->machine->WriteRegister(2, -1);
 						delete filename;
-						increasePC();
-						return;
-						//break;
+						//IncreasePC();
+						//return;
+						break;
 					}
 					
 					//Tao file thanh cong
 					kernel->machine->WriteRegister(2, 0);
 					delete filename;
-					increasePC(); //Day thanh ghi lui ve sau de tiep tuc ghi
-					return;
-				}
+					//IncreasePC(); //Day thanh ghi lui ve sau de tiep tuc ghi
+					//return;
 					break;
+				}
 
 				case SC_Open:{
 					//OpenFileId Open(char *name, int type)
@@ -227,7 +232,7 @@ ExceptionHandler(ExceptionType which)
 						delete[] fileName;
 						break;
 					}
-					fileName = User2System(nameAddr,256);\
+					fileName = User2System(nameAddr,256);
 					if (type == 0 || type == 1){
 						if (kernel->fileSystem->openFile[kernel->fileSystem->index] == kernel->fileSystem->Open(fileName, type)){
 							cerr << "Open file " << fileName <<" success \n";
@@ -406,47 +411,110 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 				}
-					break;
 
-				case SC_Join:
-				{       
-					// int Join(SpaceId id)
-					// Input: id dia chi cua thread
-					// Output: 
-					int id = kernel->machine->ReadRegister(4);
-					
-					int res = kernel->pTab->JoinUpdate(id);
-					
+				/* Tao cau truc du lieu de luu 10 semaphore
+				* Tra ve 0 neu thanh cong, nguoc lai tra ve 1
+				*/
+				case SC_CreateSemaphore:{
+					int virtAddr = kernel->machine->ReadRegister(4);
+					int semVal = kernel->machine->ReadRegister(5);
+					char* name = User2System(virtAddr, 256);
+					if (name == NULL){
+						DEBUG('a', "Not enough memory in system \n");
+						cerr << "Not enough memory in system \n";
+						kernel->machine->WriteRegister(2, -1);
+						delete[] name;
+						increasePC();
+						return;
+					}
+
+					int res = kernel->semTab->Create(name, semVal);
+
+					if (res == -1){
+						DEBUG('a', "Khong the khoi tao semaphore \n");
+						cerr << "Khong the khoi tao semaphore \n";
+						kernel->machine->WriteRegister(2, -1);
+						delete[] name;
+						increasePC();
+						return;
+					}
+					delete[] name;
 					kernel->machine->WriteRegister(2, res);
 					increasePC();
 					return;
+					ASSERTNOTREACHED();
 				}
-					break;
+				break;
 
-				case SC_Exit:
-				{
-					//void Exit(int status);
-					// Input: status code
-					int exitStatus = kernel->machine->ReadRegister(4);
-
-					if(exitStatus != 0)
-					{
+				/* Name: Ten cua Semaphore
+				*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
+				*   Wait() -- release the lock, relinquish the CPU until signaled, 
+				*		then re-acquire the lock
+				*/
+				case SC_Wait:{
+					int virtAddr = kernel->machine->ReadRegister(4);
+					char* name = User2System(virtAddr, 256);
+					if (name == NULL){
+						DEBUG('a', "Not enough memory in system \n");
+						cerr << "Not enough memory in system \n";
+						kernel->machine->WriteRegister(2, -1);
+						delete[] name;
 						increasePC();
 						return;
-						
-					}			
-					
-					int res = kernel->pTab->ExitUpdate(exitStatus);
-					//machine->WriteRegister(2, res);
+					}
 
-					kernel->currentThread->freeSpace();
-					kernel->currentThread->Finish();
+					int res = kernel->semTab->Wait(name);
+
+					if (res == -1){
+						DEBUG('a', "Khong ton tai semaphore nay \n");
+						cerr << "Khong ton tai semaphore nay \n";
+						kernel->machine->WriteRegister(2, -1);
+						delete[] name;
+						increasePC();
+						return;
+					}
+					delete[] name;
+					kernel->machine->WriteRegister(2, res);
 					increasePC();
-					return; 
-						
+					return;
+					ASSERTNOTREACHED();
 				}
-					break;
+				break;
 
+				/* Name: Ten cua Semaphore
+				* Signal() -- wake up a thread, if there are any waiting on 
+				*		the condition
+				*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
+				*/
+				case SC_Signal:{
+					int virtAddr = kernel->machine->ReadRegister(4);
+					char* name = User2System(virtAddr, 256);
+					if (name == NULL){
+						DEBUG('a', "Not enough memory in system \n");
+						cerr << "Not enough memory in system \n";
+						kernel->machine->WriteRegister(2, -1);
+						delete[] name;
+						increasePC();
+						return;
+					}
+
+					int res = kernel->semTab->Signal(name);
+
+					if (res == -1){
+						DEBUG('a', "Khong ton tai semaphore nay \n");
+						cerr << "Khong ton tai semaphore nay \n";
+						kernel->machine->WriteRegister(2, 0);
+						delete[] name;
+						increasePC();
+						return;
+					}
+					delete[] name;
+					kernel->machine->WriteRegister(2, res);
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+				}
+				break;
 
 
 				default:
