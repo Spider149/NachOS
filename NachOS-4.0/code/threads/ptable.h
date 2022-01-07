@@ -7,16 +7,12 @@
 
 #define MAX_PROCESS 10
 
-class Semaphore;
-class PCB;
-
 class PTable
 {
 private:
 	int psize;
 	Bitmap *bm;                
 	PCB* pcb[MAX_PROCESS];
-
 	Semaphore* bmsem;           
 
 public:

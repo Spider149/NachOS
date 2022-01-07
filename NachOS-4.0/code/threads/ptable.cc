@@ -20,6 +20,7 @@ PTable::PTable(int size)
 
 	pcb[0] = new PCB(0);
 	pcb[0]->parentID = -1;
+	pcb[0]->SetFileName("./test/scheduler");
 }
 
 PTable::~PTable()
@@ -39,11 +40,16 @@ int PTable::ExecUpdate(char* name)
 {
 	bmsem->P();
 
-	// Kiểm tra tính hợp lệ của chương trình “name”.
-        // Kiểm tra sự tồn tại của chương trình “name” bằng cách gọi phương thức Open của lớp fileSystem.
-	if(kernel->fileSystem->Open(name) == NULL)
+	if(name == NULL)
 	{
 		printf("\nPTable::Exec : Can't not execute name is NULL.\n");
+		bmsem->V();
+		return -1;
+	}
+
+	if( strcmp(name,"./test/scheduler") == 0 || strcmp(name,kernel->currentThread->getName()) == 0 )
+	{
+		printf("\nPTable::Exec : Can't not execute itself.\n");		
 		bmsem->V();
 		return -1;
 	}
@@ -59,11 +65,9 @@ int PTable::ExecUpdate(char* name)
 		return -1;
 	}
 
-	//Nếu có slot trống thì khởi tạo một PCB mới với processID chính là index của slot này
 	pcb[index] = new PCB(index);
-
-	// parrentID là processID của kernel->currentThread
-    	pcb[index]->parentID = kernel->currentThread->processID;
+	pcb[index]->SetFileName(name);
+    pcb[index]->parentID = kernel->currentThread->processID;
 
 
 	// Gọi thực thi phương thức Exec của lớp PCB.
@@ -120,14 +124,11 @@ int PTable::ExitUpdate(int exitcode)
 		return 0;
 	}
 
-        if(IsExist(id) == false)
+    if(IsExist(id) == false)
 	{
 		printf("\nPTable::ExitUpdate: This %d is not exist. Try again?", id);
 		return -1;
 	}
-
-
-
 
 
 	// Ngược lại gọi SetExitCode để đặt exitcode cho tiến trình gọi.
@@ -164,5 +165,6 @@ void PTable::Remove(int pid)
 	if(pcb[pid] != 0)
 		delete pcb[pid];
 }
+
 
 
