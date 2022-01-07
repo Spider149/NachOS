@@ -48,7 +48,16 @@ class FileSystem {
 	OpenFile** openFile;
 	int index;
 
-	FileSystem(){}
+	FileSystem() {
+		openFile = new OpenFile*[10];
+		index = 0;
+		for (int i = 0; i < 10; ++i)
+			openFile[i] = NULL;
+		this->Create("stdin", 0);
+		this->Create("stdout", 0);
+		openFile[index++] = this->Open("stdin", 2);
+		openFile[index++] = this->Open("stdout", 3);	
+	}
     FileSystem(bool format) {
 		openFile = new OpenFile*[10];
 		index = 0;
@@ -88,7 +97,7 @@ class FileSystem {
 
 	//Ham tim slot trong
 	int FindFreeSlot(){
-		for (int i = 2; i < 15; ++i){
+		for (int i = 2; i < 10; ++i){
 			if(openFile[i] == NULL)
 				return i;
 		}

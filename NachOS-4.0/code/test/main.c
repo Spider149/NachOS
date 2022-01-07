@@ -1,8 +1,20 @@
 #include "syscall.h"
 
 int main(){
-    int success = CreateFile("output.txt");
-    if(success == -1) PrintString("Failed\n");
-    else PrintString("Success\n");
+    //CreateFile("output2.txt");
+    char c;
+    char* a;
+    int id = Open("output.txt", 0);
+    c =  'a';
+
+    PrintNum(Write(&c, 1, id));
+    PrintChar('\n');
+    PrintNum(Read(a, 1, id));
+
+    PrintChar('\n');
+    PrintString(a);
+    PrintChar('\n');
+
+    PrintNum(Close(id));
     Halt();
 }

@@ -222,10 +222,11 @@ ExceptionHandler(ExceptionType which)
 					int nameAddr = kernel->machine->ReadRegister(4);
 					int type = kernel->machine->ReadRegister(5);
 					char* fileName;
+					int freeSlot;
 					fileName = User2System(nameAddr,256);
 
-					int freeSlot = kernel->fileSystem->FindFreeSlot();
-					if (freeSlot == 0){
+					freeSlot = kernel->fileSystem->FindFreeSlot();
+					if (freeSlot == -1){
 						kernel->machine->WriteRegister(2, -1);
 						delete[] fileName;
 						increasePC();
@@ -264,6 +265,8 @@ ExceptionHandler(ExceptionType which)
 							kernel->fileSystem->openFile[nameAddr] == NULL;
 							kernel->machine->WriteRegister(2, 0);
 							cerr<<"Close file success \n";
+							increasePC();
+							return;
 						}
 					}
 					cerr<<"Close file fail \n";

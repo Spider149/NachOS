@@ -269,7 +269,7 @@ FileSystem::Open(char *name, int type)
 //Ham tim slot trong
 int FileSystem::FindFreeSlot()
 {
-	for(int i = 2; i < 15; i++)
+	for(int i = 2; i < 10; i++)
 	{
 		if(openFile[i] == NULL) return i;		
 	}
