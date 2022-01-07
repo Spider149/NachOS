@@ -7,6 +7,9 @@
 
 #define MAX_PROCESS 10
 
+class PCB;
+class Semaphore;
+
 class PTable
 {
 private:

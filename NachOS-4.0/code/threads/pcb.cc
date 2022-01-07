@@ -122,16 +122,17 @@ int PCB::Exec(char* filename, int id)
 
 	if(executable==NULL){
 		printf("Unable to open %s\n",filename);
-		return;
 	}
-	//space = new AddrSpace(executable);
-	//kernel->currentThread->space = space;
+	else {
+		space = new AddrSpace(executable);
+		kernel->currentThread->space = space;
+		delete executable;
+		space->InitRegisters();
+		space->RestoreState();
+		kernel->machine->Run();
+		ASSERT(FALSE);
+	}
 
-	delete executable;
-	//space->InitRegisters();
-	//space->RestoreState();
-	kernel->machine->Run();
-	ASSERT(FALSE);
     multex->V();
 	return id;
 
