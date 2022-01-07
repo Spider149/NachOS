@@ -44,6 +44,10 @@
 #define SC_ReadString 48
 #define SC_PrintString 49
 
+#define SC_CreateSemaphore 50
+#define SC_Wait 51
+#define SC_Signal 52
+
 #ifndef IN_ASM
 
 /* The system call interface.  These are the operations the Nachos
@@ -170,6 +174,24 @@ int Seek(int position, OpenFileId id);
  * Return 1 on success, negative error code on failure
  */
 int Close(OpenFileId id);
+
+/* Tao cau truc du lieu de luu 10 semaphore
+* Tra ve 0 neu thanh cong, nguoc lai tra ve 1
+*/
+int CreateSemaphore(char* name, int semval);
+
+/* Name: Ten cua Semaphore
+*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
+*   Wait() -- release the lock, relinquish the CPU until signaled, 
+*		then re-acquire the lock
+*/
+int Wait(char* name);
+/* Name: Ten cua Semaphore
+* Signal() -- wake up a thread, if there are any waiting on 
+*		the condition
+*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
+*/
+int Signal(char* name);
 
 
 /* User-level thread operations: Fork and Yield.  To allow multiple

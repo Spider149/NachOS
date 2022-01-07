@@ -232,7 +232,7 @@ ExceptionHandler(ExceptionType which)
 						delete[] fileName;
 						break;
 					}
-					fileName = User2System(nameAddr,256);\
+					fileName = User2System(nameAddr,256);
 					if (type == 0 || type == 1){
 						if (kernel->fileSystem->openFile[kernel->fileSystem->index] == kernel->fileSystem->Open(fileName, type)){
 							cerr << "Open file " << fileName <<" success \n";
@@ -451,6 +451,7 @@ ExceptionHandler(ExceptionType which)
 						
 				}
 					break;
+
 
 
 
