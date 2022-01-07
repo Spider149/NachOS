@@ -222,27 +222,25 @@ ExceptionHandler(ExceptionType which)
 					int nameAddr = kernel->machine->ReadRegister(4);
 					int type = kernel->machine->ReadRegister(5);
 					char* fileName;
-					if (kernel->fileSystem->index > 10){
+					fileName = User2System(nameAddr,256);
+
+					int freeSlot = kernel->fileSystem->FindFreeSlot();
+					if (freeSlot == 0){
 						kernel->machine->WriteRegister(2, -1);
 						delete[] fileName;
-						break;
+						increasePC();
+						return;
 					}
-					fileName = User2System(nameAddr,256);
 					if (type == 0 || type == 1){
-						if (kernel->fileSystem->openFile[kernel->fileSystem->index] == kernel->fileSystem->Open(fileName, type)){
+						if ((kernel->fileSystem->openFile[freeSlot] = kernel->fileSystem->Open(fileName, type)) != NULL){
 							cerr << "Open file " << fileName <<" success \n";
-							kernel->machine->WriteRegister(2, kernel->fileSystem->index-1);
-						} else {
-							cerr << "Can not open file "<<fileName<<"\n";
-							kernel->machine->WriteRegister(2, -1);
-						}
-					}
-					else if (strcmp(fileName,"stdin") == 0){
-						cerr <<"Stdin mode \n";
-						kernel->machine->WriteRegister(2, 0);
-					}
-					else if (strcmp(fileName, "stdout") == 0){
-						cerr <<"Stdout mode \n";
+							kernel->machine->WriteRegister(2, freeSlot);
+						} 
+					} else if (type == 2) {
+							cerr << "Sdtin mode \n";
+							kernel->machine->WriteRegister(2, 0);
+					} else{
+						cerr << "Stdout mode \n";
 						kernel->machine->WriteRegister(2, 1);
 					}
 					if (fileName)
