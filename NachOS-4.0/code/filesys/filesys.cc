@@ -144,14 +144,10 @@ FileSystem::FileSystem(bool format)
     index = 0;
     for (int i = 0; i < 10; ++i)
         openFile[i] = NULL;
+    openFile[index++] = this->Open("stdin", 2);
+    openFile[index++] = this->Open("stdout", 3);
     this->Create("stdin", 0);
     this->Create("stdout", 0);
-    OpenFile* temp = this->Open("stdin", 2);
-    openFile[0] = temp;
-    temp = this->Open("stdout", 3);
-    openFile[1] = temp;
-    index = 1;
-    delete temp;
 }
 
 //----------------------------------------------------------------------
@@ -249,13 +245,14 @@ FileSystem::Open(char *name)
 	    openfile = new OpenFile(sector);	// name was found in directory 
     delete directory;
     index++;
-    return openFile[index-1];				// return NULL if not found
+    return openFile[index - 1];			// return NULL if not found
 }
 
 OpenFile *
 FileSystem::Open(char *name, int type)
 {
-    Directory *directory = new Directory(NumDirEntries);\
+    int freeSlot = this->FindFreeSlot();
+    Directory *directory = new Directory(NumDirEntries);
     OpenFile *openfile = NULL;
     int sector;
 
@@ -263,10 +260,20 @@ FileSystem::Open(char *name, int type)
     directory->FetchFrom(directoryFile);
     sector = directory->Find(name); 
     if (sector >= 0) 		
-	    openFile[index] = new OpenFile(sector);	// name was found in directory 
+	    openFile[freeSlot] = new OpenFile(sector, type);	// name was found in directory 
     delete directory;
-    index++;
-    return openFile[index-1];				// return NULL if not found
+    //index++;
+    return openFile[freeSlot];				// return NULL if not found
+}
+
+//Ham tim slot trong
+int FileSystem::FindFreeSlot()
+{
+	for(int i = 2; i < 15; i++)
+	{
+		if(openFile[i] == NULL) return i;		
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------
