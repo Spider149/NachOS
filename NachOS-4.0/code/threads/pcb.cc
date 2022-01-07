@@ -117,7 +117,21 @@ int PCB::Exec(char* filename, int id)
 	this->thread->processID = id;
 	this->parentID = kernel->currentThread->processID;
  	//this->thread->Fork(StartProcess_2,id);
+	OpenFile* executable = kernel->fileSystem->Open(filename);
+	AddrSpace* space;
 
+	if(executable==NULL){
+		printf("Unable to open %s\n",filename);
+		return;
+	}
+	//space = new AddrSpace(executable);
+	//kernel->currentThread->space = space;
+
+	delete executable;
+	//space->InitRegisters();
+	//space->RestoreState();
+	kernel->machine->Run();
+	ASSERT(FALSE);
     multex->V();
 	return id;
 
