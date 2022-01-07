@@ -21,6 +21,7 @@
 class AddrSpace {
   public:
     AddrSpace();			// Create an address space.
+    AddrSpace(OpenFile* executable);
     AddrSpace(char* fileName);
     ~AddrSpace();			// De-allocate an address space
 
@@ -43,14 +44,15 @@ class AddrSpace {
 
     bool usedPhyPage[NumPhysPages];
 
+    void InitRegisters();		// Initialize user-level CPU registers,
+					// before jumping to user code
+
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
     unsigned int numPages;		// Number of pages in the virtual 
 					// address space
 
-    void InitRegisters();		// Initialize user-level CPU registers,
-					// before jumping to user code
     bool load(char* fileName);
 
 };
