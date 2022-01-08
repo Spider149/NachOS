@@ -155,30 +155,6 @@ int PCB::Exec(char* filename, int id)
 
 }
 
-bool PCB::Create(char *name, int initialSize) {
-   return fileTable->Create(name, initialSize);
+FileTable* PCB::getFileTable(){
+	return this->fileTable;
 }
-
-int PCB::FindFreeSlot() {
-   return fileTable->FindFreeSlot();
-}
-
-OpenFile* PCB::getOpenFileId(int id){
-	return fileTable->getOpenFileId(id);
-}
-
-int PCB::Open(char* name){
-	return fileTable->Open(name);
-}
-int PCB::Open(char* name, int type){
-	return fileTable->Open(name, type);
-
-}
-
-void PCB::Close(int id){
-	fileTable->closeFile(id);
-}
-
-char* PCB::getFileName(){
-	return thread->getName();
-};

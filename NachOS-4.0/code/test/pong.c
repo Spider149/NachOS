@@ -3,7 +3,7 @@
 int main()
 {
 	int i,j,r;
-	for(i =0; i< 100; i++)
+	for(i =0; i< 1000; i++)
 	{
 		PrintChar('A');
 		//r = RandomNum() % 10000;

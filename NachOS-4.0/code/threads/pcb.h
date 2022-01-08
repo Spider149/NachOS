@@ -48,13 +48,7 @@ public:
     void SetFileName(char* fn);    // Set ten tien trinh
     char* GetFileName();        // Tra ve ten tien trinh
 
-    bool Create(char *name, int initialSize);
-    int FindFreeSlot();
-    OpenFile* getOpenFileId(int id);
-    int Open(char* name);
-    int Open(char* name, int type);
-    void Close(int id);
-    char* getFileName();
+    FileTable* getFileTable();
 };
 
 #endif // PCB_H

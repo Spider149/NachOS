@@ -206,7 +206,7 @@ ExceptionHandler(ExceptionType which)
 						//break;
 					}*/
 
-					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
+					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
 					{
 						//Tao file that bai
 						printf("\n Error create file '%s'", filename);
@@ -236,7 +236,7 @@ ExceptionHandler(ExceptionType which)
 					int freeSlot;
 					fileName = User2System(nameAddr,256);
 
-					freeSlot = kernel->pTab->getPCB(kernel->currentThread->processID)->FindFreeSlot();
+					freeSlot = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->FindFreeSlot();
 					if (freeSlot == -1){
 						kernel->machine->WriteRegister(2, -1);
 						delete[] fileName;
@@ -244,7 +244,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 					if (type == 0 || type == 1){
-						if (kernel->pTab->getPCB(kernel->currentThread->processID)->Open(fileName, type) != -1){
+						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type) != -1){
 							cerr << "Open file " << fileName <<" success \n";
 							kernel->machine->WriteRegister(2, freeSlot);
 						} 
@@ -271,8 +271,8 @@ ExceptionHandler(ExceptionType which)
 					int nameAddr = kernel->machine->ReadRegister(4);
 					int index = kernel->fileSystem->index;
 					if (nameAddr >= 0 && nameAddr <= 9 && index >= nameAddr){
-						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(nameAddr)){
-							kernel->pTab->getPCB(kernel->currentThread->processID)->Close(nameAddr);
+						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(nameAddr)){
+							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->closeFile(nameAddr);;
 							kernel->machine->WriteRegister(2, 0);
 							cerr<<"Close file success \n";
 							increasePC();
@@ -306,7 +306,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id) == NULL)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id) == NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
@@ -314,7 +314,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 3)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 3)
 					{
 						printf("\nFile stdout khong the doc");
 						kernel->machine->WriteRegister(2, -1);
@@ -322,10 +322,10 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
+					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 2)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 2)
 					{
 						int i = 0;
 						while(i < charcount){
@@ -342,9 +342,9 @@ ExceptionHandler(ExceptionType which)
 						return;
 					} 
 
-					if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->Read(buffer, charcount)) > 0)
+					if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->Read(buffer, charcount)) > 0)
 					{
-						newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
+						newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
 						System2User(virtAddr, newPos - oldPos, buffer); 
 						kernel->machine->WriteRegister(2, newPos - oldPos);
 					}
@@ -372,35 +372,35 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)== NULL)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)== NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 1 || kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 2)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 1 || kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 2)
 					{
 						printf("\nKhong the ghi vao file chi doc va file stdin");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
+					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 0)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 0)
 					{
-						if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->Write(buffer, charcount)) > 0)
+						if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->Write(buffer, charcount)) > 0)
 						{
-							newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->GetCurrentPos();
+							newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
 							kernel->machine->WriteRegister(2, newPos - oldPos);
 							delete buffer;
 							increasePC();
 							return;
 						}
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(id)->type == 3)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 3)
 					{
 						int i = 0;
 						while(i<charcount){
@@ -541,7 +541,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 				
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->Open(name) == -1)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(name) == -1)
 					{
 						printf("\nExec:: Can't open this file.");
 						kernel->machine->WriteRegister(2,-1);
