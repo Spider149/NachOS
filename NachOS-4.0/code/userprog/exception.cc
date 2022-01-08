@@ -549,7 +549,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					printf("ExecUpdate");
+					printf("ExecUpdate\n");
 
 					// Return child process id
 					int id = kernel->pTab->ExecUpdate(name); 

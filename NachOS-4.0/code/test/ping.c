@@ -2,11 +2,12 @@
 
 int main()
 {
-	
-	int i;
-	for(i =0; i< 1000; i++)
+	int i,j,r;
+	for(i =0; i< 100; i++)
 	{
-		PrintChar('A');
+		PrintChar('B');
+		//r = RandomNum() % 10000;
+		//for(j =0; j< r; j++);
 	}
 	Exit(0);	
 }
