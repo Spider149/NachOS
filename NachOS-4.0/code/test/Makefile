@@ -112,7 +112,7 @@ ifeq ($(hosttype),unknown)
 PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
-PROGRAMS = add halt shell matmult sort segments number char string help ascii sort main
+PROGRAMS = add halt shell matmult sort segments number char string help ascii sort main ping pong scheduler
 endif
 
 all: $(PROGRAMS)
@@ -199,6 +199,23 @@ main: main.o start.o
 	$(LD) $(LDFLAGS) start.o main.o -o main.coff
 	$(COFF2NOFF) main.coff main
 
+ping.o: ping.c
+	$(CC) $(CFLAGS) -c ping.c
+ping: ping.o start.o
+	$(LD) $(LDFLAGS) start.o ping.o -o ping.coff
+	$(COFF2NOFF) ping.coff ping
+
+pong.o: pong.c
+	$(CC) $(CFLAGS) -c pong.c
+pong: pong.o start.o
+	$(LD) $(LDFLAGS) start.o pong.o -o pong.coff
+	$(COFF2NOFF) pong.coff pong
+
+scheduler.o: scheduler.c
+	$(CC) $(CFLAGS) -c scheduler.c
+scheduler: scheduler.o start.o
+	$(LD) $(LDFLAGS) start.o scheduler.o -o scheduler.coff
+	$(COFF2NOFF) scheduler.coff scheduler
 clean:
 	$(RM) -f *.o *.ii
 	$(RM) -f *.coff
