@@ -8,5 +8,5 @@ void main()
 	pingPID = Exec("ping");
 	pongPID = Exec("pong");
 	Join(pingPID);
-	Join(pongPID);	
+	Join(pongPID);
 }
