@@ -296,29 +296,17 @@ AddrSpace::AddrSpace(char* filename)
     kernel->addrLock->V();
 
     // then, copy in the code and data segments into memory
-// Note: this code assumes that virtual address = physical address
-    if (noffH.code.size > 0) {
-        for(i = 0; i < numPages; ++i){
-        executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.code.virtualAddr]) + (pageTable[i].physicalPage*PageSize),PageSize,noffH.code.inFileAddr + (i*PageSize));
-        }
-    }
-    if (noffH.initData.size > 0) {
-        for(i = 0; i < numPages; ++i){
-            executable->ReadAt(
-            &(kernel->machine->mainMemory[noffH.initData.virtualAddr]) + (pageTable[i].physicalPage*PageSize),PageSize, noffH.initData.inFileAddr+(i*PageSize));
-        }
+    if (noffH.code.size > 0)
+    {
+	for(i = 0; i < numPages ; i++)
+	        executable->ReadAt(&(kernel->machine->mainMemory[noffH.code.virtualAddr]) + (pageTable[i].physicalPage*PageSize),PageSize,noffH.code.inFileAddr + (i*PageSize));
     }
 
-#ifdef RDATA
-    if (noffH.readonlyData.size > 0) {
-        for(i = 0; i < numPages; ++i){
-            executable->ReadAt(
-            &(kernel->machine->mainMemory[noffH.readonlyData.virtualAddr]) + (pageTable[i].physicalPage*PageSize), PageSize,
-                noffH.readonlyData.inFileAddr + (i*PageSize));
-        }
-    }
-#endif
+    if (noffH.initData.size > 0)
+    {
+	for(i = 0 ; i < numPages ; i++)
+	        executable->ReadAt(&(kernel->machine->mainMemory[noffH.initData.virtualAddr]) + (pageTable[i].physicalPage*PageSize),PageSize, noffH.initData.inFileAddr+(i*PageSize));
+    }	
 
    delete executable;
 
