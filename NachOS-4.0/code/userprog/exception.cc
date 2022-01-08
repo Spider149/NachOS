@@ -549,6 +549,8 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
+					printf("ExecUpdate");
+
 					// Return child process id
 					int id = kernel->pTab->ExecUpdate(name); 
 					kernel->machine->WriteRegister(2,id);

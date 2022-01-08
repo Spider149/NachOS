@@ -5,11 +5,12 @@
 
 void StartProcess_2(int id)
 {
+	printf("Vao duoc day r ne\n");
 	char* fileName = kernel->pTab->getFileName(id);
 
 	AddrSpace *space;
 	space = new AddrSpace(fileName);
-
+		printf("Vao duoc day r ne2\n");
 	if(space == NULL)
 	{
 		cerr << "PCB::Exec : Can't create AddSpace. \n";
@@ -134,25 +135,26 @@ int PCB::Exec(char* filename, int id)
         multex->V();
 		return -1;
 	}
+	printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 
 	this->thread->processID = id;
 	this->parentID = kernel->currentThread->processID;
  	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)id);
-	OpenFile* executable = kernel->fileSystem->Open(filename);
-	AddrSpace* space;
+	// OpenFile* executable = kernel->fileSystem->Open(filename);
+	// AddrSpace* space;
 
-	if(executable==NULL){
-		printf("Unable to open %s\n",filename);
-	}
-	else {
-		space = new AddrSpace(executable);
-		kernel->currentThread->space = space;
-		delete executable;
-		space->InitRegisters();
-		space->RestoreState();
-		kernel->machine->Run();
-		ASSERT(FALSE);
-	}
+	// if(executable==NULL){
+	// 	printf("Unable to open %s\n",filename);
+	// }
+	// else {
+	// 	space = new AddrSpace(executable);
+	// 	kernel->currentThread->space = space;
+	// 	delete executable;
+	// 	space->InitRegisters();
+	// 	space->RestoreState();
+	// 	kernel->machine->Run();
+	// 	ASSERT(FALSE);
+	// }
 
     multex->V();
 	return id;
