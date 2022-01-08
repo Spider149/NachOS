@@ -12,8 +12,8 @@ FileTable::FileTable(){
         fileTable[i] = NULL;
     this->Create("stdin", 0);
     this->Create("stdout", 0);
-    fileTable[index++] = this->Open("stdin", 2);
-    fileTable[index++] = this->Open("stdout", 3);
+    fileTable[0] = this->OpenF("stdin", 2);
+    fileTable[1] = this->OpenF("stdout", 3);
 }
 
 bool FileTable::Create(char *name, int initialSize) {
@@ -28,21 +28,38 @@ OpenFile* FileTable::getOpenFileId(int id){
     return fileTable[id];
 }
 
-OpenFile* FileTable::Open(char* name, int type){
+int FileTable::Open(char* name, int type){
     int fileDescriptor = OpenForReadWrite(name, FALSE);
 
-	  if (fileDescriptor == -1) return NULL;
-	  //index++;
-	  return new OpenFile(fileDescriptor, type);
+	if (fileDescriptor == -1) return -1;
+	int freeSlot = FindFreeSlot();
+    fileTable[freeSlot] = new OpenFile(fileDescriptor, type);
+    if (fileTable[freeSlot] != NULL)
+        return freeSlot;
+    return -1;
 }
 
-OpenFile* FileTable::Open(char *name) {
+int FileTable::Open(char *name) {
+    int fileDescriptor = OpenForReadWrite(name, FALSE);
+
+    if (fileDescriptor == -1) return -1;
+    int freeSlot = FindFreeSlot();
+    fileTable[freeSlot] = new OpenFile(fileDescriptor);
+    if (fileTable[freeSlot] != NULL)
+        return freeSlot;
+    return -1;
+}
+
+OpenFile* FileTable::OpenF(char* name){
     int fileDescriptor = OpenForReadWrite(name, FALSE);
 
     if (fileDescriptor == -1) return NULL;
-    //index++;
-    int index;
-    bool Create(char *name, int initialSize);
+    return new OpenFile(fileDescriptor);
+}
+OpenFile* FileTable::OpenF(char* name, int type){
+    int fileDescriptor = OpenForReadWrite(name, FALSE);
+
+    if (fileDescriptor == -1) return NULL;
     return new OpenFile(fileDescriptor);
 }
 int FileTable::FindFreeSlot(){

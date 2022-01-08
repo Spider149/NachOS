@@ -51,8 +51,8 @@ public:
     bool Create(char *name, int initialSize);
     int FindFreeSlot();
     OpenFile* getOpenFileId(int id);
-    OpenFile* Open(char* name);
-    OpenFile* Open(char* name, int type);
+    int Open(char* name);
+    int Open(char* name, int type);
     void Close(int id);
     char* getFileName();
 };

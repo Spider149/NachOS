@@ -171,10 +171,10 @@ OpenFile* PCB::getOpenFileId(int id){
 	return fileTable->getOpenFileId(id);
 }
 
-OpenFile* PCB::Open(char* name){
+int PCB::Open(char* name){
 	return fileTable->Open(name);
 }
-OpenFile* PCB::Open(char* name, int type){
+int PCB::Open(char* name, int type){
 	return fileTable->Open(name, type);
 
 }

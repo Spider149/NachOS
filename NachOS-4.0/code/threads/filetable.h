@@ -15,8 +15,10 @@ private:
 public:                
     FileTable();
     bool Create(char *name, int initialSize);
-    OpenFile* Open(char* name);
-    OpenFile* Open(char* name, int type);
+    int Open(char* name);
+    int Open(char* name, int type);
+    OpenFile* OpenF(char* name);
+    OpenFile* OpenF(char* name, int type);
     OpenFile* getOpenFileId(int id);
     void closeFile(int id);
     int FindFreeSlot();

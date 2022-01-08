@@ -7,8 +7,6 @@ int main(){
     int id = Open("output.txt", 0);
     c =  'a';
 
-    PrintNum(Write(&c, 1, id));
-    PrintChar('\n');
     PrintNum(Read(a, 1, id));
 
     PrintChar('\n');

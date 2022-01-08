@@ -244,8 +244,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 					if (type == 0 || type == 1){
-						OpenFile* temp = kernel->pTab->getPCB(kernel->currentThread->processID)->getOpenFileId(freeSlot);
-						if (( temp = kernel->pTab->getPCB(kernel->currentThread->processID)->Open(fileName, type)) != NULL){
+						if (kernel->pTab->getPCB(kernel->currentThread->processID)->Open(fileName, type) != -1){
 							cerr << "Open file " << fileName <<" success \n";
 							kernel->machine->WriteRegister(2, freeSlot);
 						} 
@@ -541,16 +540,14 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					OpenFile *oFile = kernel->pTab->getPCB(kernel->currentThread->processID)->Open(name);
-					if (oFile == NULL)
+				
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->Open(name) == -1)
 					{
 						printf("\nExec:: Can't open this file.");
 						kernel->machine->WriteRegister(2,-1);
 						increasePC();
 						return;
 					}
-
-					delete oFile;
 
 					// Return child process id
 					int id = kernel->pTab->ExecUpdate(name); 
