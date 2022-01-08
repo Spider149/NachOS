@@ -74,8 +74,10 @@ bool FileTable::Remove(char* name){
 }
 
 void FileTable::closeFile(int id){
-    if (fileTable != NULL)
+    if (fileTable[id] != NULL){
+        delete fileTable[id];
         fileTable[id] = NULL;
+    }
 }
     
 FileTable::~FileTable(){
