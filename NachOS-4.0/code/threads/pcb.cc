@@ -17,7 +17,7 @@ void StartProcess_2(int id)
 		cerr << "PCB::Exec : Can't create AddSpace. \n";
 		return;
 	}
-				printf("Vao duoc day r ne4n");
+				printf("Vao duoc day r ne4\n");
 	kernel->currentThread->space = space;
 			printf("Vao duoc day r ne5\n");
 	space->InitRegisters();		
@@ -142,7 +142,7 @@ int PCB::Exec(char* filename, int id)
 
 	this->thread->processID = id;
 	this->parentID = kernel->currentThread->processID;
- 	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)id);
+ 	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)this->thread->processID);
 	// OpenFile* executable = kernel->fileSystem->Open(filename);
 	// AddrSpace* space;
 
