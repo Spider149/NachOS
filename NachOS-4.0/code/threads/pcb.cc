@@ -10,19 +10,22 @@ void StartProcess_2(int id)
 
 	AddrSpace *space;
 	space = new AddrSpace(fileName);
-		printf("Vao duoc day r ne2\n");
+	printf("Vao duoc day r ne2\n");
 	if(space == NULL)
 	{
+			printf("Vao duoc day r ne3\n");
 		cerr << "PCB::Exec : Can't create AddSpace. \n";
 		return;
 	}
-
+				printf("Vao duoc day r ne4n");
 	kernel->currentThread->space = space;
-
+			printf("Vao duoc day r ne5\n");
 	space->InitRegisters();		
+				printf("Vao duoc day r ne6\n");
 	space->RestoreState();		
-
+			printf("Vao duoc day r ne7\n");
 	kernel->machine->Run();		
+				printf("Vao duoc day r ne8\n");
 	ASSERT(FALSE);		
 }
 
