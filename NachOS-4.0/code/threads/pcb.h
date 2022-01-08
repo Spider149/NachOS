@@ -18,7 +18,7 @@ private:
     int pid;
     int exitcode;		
     int numwait;                // số tiến trình đã join
-    char FileName[64];          // Ten cua tien trinh
+    char FileName[32];          // Ten cua tien trinh
     Thread* thread;             // Tien trinh cua chuong trinh
 
     FileTable* fileTable;

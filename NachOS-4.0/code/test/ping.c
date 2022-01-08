@@ -8,5 +8,5 @@ int main()
 	{
 		PrintChar('A');
 	}
-	
+	Exit(0);	
 }

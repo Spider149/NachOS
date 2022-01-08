@@ -244,7 +244,7 @@ AddrSpace::AddrSpace(char* filename)
 
     if (executable == NULL)
     {
-    	printf("Unable to open file %s\n", filename);
+    	printf("AddrSpace::AddrSpace: Unable to open file %s\n", filename);
 	    return;
     }
 

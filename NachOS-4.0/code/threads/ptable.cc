@@ -20,7 +20,7 @@ PTable::PTable(int size)
 
 	pcb[0] = new PCB(0);
 	pcb[0]->parentID = -1;
-	pcb[0]->SetFileName("./test/scheduler");
+	pcb[0]->SetFileName("./scheduler");
 }
 
 PTable::~PTable()
@@ -167,7 +167,7 @@ void PTable::Remove(int pid)
 }
 
 char* PTable::getFileName(int id){
-	return pcb[id]->getFileName();
+	return pcb[id]->GetFileName();
 }
 
 

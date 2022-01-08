@@ -8,6 +8,8 @@ void StartProcess_2(int id)
 	printf("Vao duoc day r ne\n");
 	char* fileName = kernel->pTab->getFileName(id);
 
+	cout << "\"" << fileName << "\"" << "\n";
+
 	AddrSpace *space;
 	space = new AddrSpace(fileName);
 	printf("Vao duoc day r ne2\n");

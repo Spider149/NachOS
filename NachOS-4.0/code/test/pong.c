@@ -7,4 +7,5 @@ int main()
 	{
 		PrintChar('B');
 	}
+	Exit(0);
 }
