@@ -219,7 +219,7 @@ Wait:
 	.end Wait
 
 	.globl Signal
-	.ent	Close
+	.ent	Signal
 Signal:
 	addiu $2,$0,SC_Signal
 	syscall

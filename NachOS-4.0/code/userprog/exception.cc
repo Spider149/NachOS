@@ -417,28 +417,29 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 				}
-
+				break;
 				/* Tao cau truc du lieu de luu 10 semaphore
 				* Tra ve 0 neu thanh cong, nguoc lai tra ve 1
 				*/
 				case SC_CreateSemaphore:{
+					printf("hello \n");
 					int virtAddr = kernel->machine->ReadRegister(4);
 					int semVal = kernel->machine->ReadRegister(5);
 					char* name = User2System(virtAddr, 33);
 					if (name == NULL){
 						DEBUG('a', "Not enough memory in system \n");
-						cerr << "Not enough memory in system \n";
+						printf("Not enough memory in system \n");
 						kernel->machine->WriteRegister(2, -1);
 						delete[] name;
 						increasePC();
 						return;
 					}
-
+					printf("Begin create semtab \n");
 					int res = kernel->semTab->Create(name, semVal);
-
+					printf("End create semtab \n");
 					if (res == -1){
 						DEBUG('a', "Khong the khoi tao semaphore \n");
-						cerr << "Khong the khoi tao semaphore \n";
+						printf("Khong the khoi tao semaphore \n");
 						kernel->machine->WriteRegister(2, -1);
 						delete[] name;
 						increasePC();

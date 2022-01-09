@@ -176,7 +176,7 @@ int Seek(int position, OpenFileId id);
 int Close(OpenFileId id);
 
 /* Tao cau truc du lieu de luu 10 semaphore
-* Tra ve 0 neu thanh cong, nguoc lai tra ve 1
+* Tra ve 0 neu thanh cong, nguoc lai tra ve -1
 */
 int CreateSemaphore(char* name, int semval);
 
