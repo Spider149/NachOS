@@ -12,6 +12,8 @@ void main()
     size_out = 2;
     out[0] = (char)(id + '0');
 
+    fileID = Open("output.txt", 0);
+
     for (i=0; i<10; i++){
         Wait("WaterTap");
 
@@ -22,15 +24,14 @@ void main()
         PrintNum(id);
         PrintString("\n");
 
-        fileID = Open("output.txt", 0);
         while(Read(tmp, 1, fileID) > 0);
         Write(out, size_out, fileID);
-        Close(fileID);
 
         Signal("WaterTap");
     }
+    Close(fileID);
     
-    PrintString("(Student");
+    PrintString("(Student ");
     PrintNum(id);
     PrintString(" done)\n");
 

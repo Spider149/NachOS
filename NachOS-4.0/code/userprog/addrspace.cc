@@ -267,7 +267,7 @@ AddrSpace::AddrSpace(char* filename)
 
     int numclear = kernel->gPhysPageBitmap->NumClear();
 
-    printf("\n\nSize: %d | numPages: %d | PageSize: %d | Numclear: %d\n\n", size, numPages, PageSize, numclear);  
+    //printf("\n\nSize: %d | numPages: %d | PageSize: %d | Numclear: %d\n\n", size, numPages, PageSize, numclear);  
 
     if(numPages > numclear)
     {

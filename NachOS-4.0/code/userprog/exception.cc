@@ -538,14 +538,16 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-				
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(name) == -1)
+
+					OpenFile* tmp = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->OpenF(name);
+					if (tmp == NULL)
 					{
 						printf("\nExec:: Can't open this file.");
 						kernel->machine->WriteRegister(2,-1);
 						increasePC();
 						return;
 					}
+					tmp->~OpenFile();
 
 					// Return child process id
 					int id = kernel->pTab->ExecUpdate(name); 

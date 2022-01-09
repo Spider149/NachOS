@@ -14,17 +14,18 @@ void main()
 	PrintString("Nhap so sinh vien: ");
 	numStudent = ReadNum();
 
-	for (i=0; i<numStudent; i++){
-		IDs[i] = Exec("student");
-	}
+	//PrintString("-------------------------------\n");
 
-	for (i=0; i<numStudent; i++){
-		Join(IDs[i]);
-	}
+	for (i=0; i<numStudent; i++) IDs[i] = Exec("student");
+	for (i=0; i<numStudent; i++) 
+		if (IDs[i] >= 0)
+			Join(IDs[i]);
 
+	//PrintString("-------------------------------\n");
 
 	PrintString("Thu tu lay nuoc la: \n");
 	while(Read(res, 1, fileID) > 0) PrintString(res);
+	PrintChar('\n');
 
 	Close(fileID);
 }

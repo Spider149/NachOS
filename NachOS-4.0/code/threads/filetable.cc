@@ -7,7 +7,6 @@
     
 FileTable::FileTable(){
     fileTable = new OpenFile*[10];
-    index = 0;
     for (int i = 0; i < 10; ++i)
         fileTable[i] = NULL;
     this->Create("stdin", 0);
@@ -33,6 +32,9 @@ int FileTable::Open(char* name, int type){
 
 	if (fileDescriptor == -1) return -1;
 	int freeSlot = FindFreeSlot();
+    if (freeSlot < 0) {
+        return -1;
+    }
     fileTable[freeSlot] = new OpenFile(fileDescriptor, type);
     if (fileTable[freeSlot] != NULL)
         return freeSlot;
@@ -42,8 +44,13 @@ int FileTable::Open(char* name, int type){
 int FileTable::Open(char *name) {
     int fileDescriptor = OpenForReadWrite(name, FALSE);
 
-    if (fileDescriptor == -1) return -1;
+    if (fileDescriptor == -1) {
+        return -1;
+    }
     int freeSlot = FindFreeSlot();
+    if (freeSlot < 0) {
+        return -1;
+    }
     fileTable[freeSlot] = new OpenFile(fileDescriptor);
     if (fileTable[freeSlot] != NULL)
         return freeSlot;
@@ -65,8 +72,11 @@ OpenFile* FileTable::OpenF(char* name, int type){
 int FileTable::FindFreeSlot(){
     for(int i = 2; i < 10; i++)
 	{
-		if(fileTable[i] == NULL) return i;
+		if(fileTable[i] == NULL) {
+            return i;
+        }
 	}
+    printf("No free slot on file table \n");
 	return -1;
 }
 bool FileTable::Remove(char* name){

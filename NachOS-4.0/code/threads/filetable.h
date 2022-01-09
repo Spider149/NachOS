@@ -11,7 +11,6 @@ class FileTable
 {
 private:
     OpenFile** fileTable;
-    int index;
 public:                
     FileTable();
     bool Create(char *name, int initialSize);
