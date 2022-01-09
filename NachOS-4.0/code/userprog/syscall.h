@@ -47,6 +47,7 @@
 #define SC_CreateSemaphore 50
 #define SC_Wait 51
 #define SC_Signal 52
+#define SC_GetPID 53
 
 #ifndef IN_ASM
 
@@ -192,6 +193,9 @@ int Wait(char* name);
 *  Tra ve 0 neu thanh cong, tra ve -1 neu loi
 */
 int Signal(char* name);
+
+
+int GetPID();
 
 
 /* User-level thread operations: Fork and Yield.  To allow multiple

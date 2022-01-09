@@ -5,7 +5,9 @@ int main()
 	int i,j,r;
 	for(i =0; i< 1000; i++)
 	{
-		PrintChar('B');
+		Wait("write");
+		PrintChar('A');
+		Signal("write");
 		//r = RandomNum() % 10000;
 		//for(j =0; j< r; j++);
 	}

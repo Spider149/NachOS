@@ -2,12 +2,15 @@
 
 // Tim ID cua Semaphore "name". Neu khong co tra ve -1
 int STable::FindByName(char* name){
-    for(int id=0; id<MAX_SEMAPHORE; id++)
+    for(int id=0; id<MAX_SEMAPHORE; id++) {
 		// Kiem tra o thu i da duoc nap semaphore chua
-		if(bm->Test(id))
+		if(bm->Test(id) && semTab[id] != NULL ) {
 			// Neu co thi tien hanh so sanh name voi name cua semaphore trong semTab
-			if(strcmp(name, semTab[id]->GetName()) == 0)
+			if(strcmp(name, semTab[id]->GetName()) == 0){
 				return id;
+			}
+		}
+	}
     // Neu khong co thi tra ve -1
     return -1;
 }

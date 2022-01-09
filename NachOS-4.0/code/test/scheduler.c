@@ -3,10 +3,15 @@
 
 void main()
 {
-	int pingPID, pongPID;
-	PrintString("Ping-Pong test starting...\n\n");
-	pingPID = Exec("ping");
-	pongPID = Exec("pong");
-	Join(pingPID);
-	Join(pongPID);
+	int n, i, j;
+	int IDs[10];
+
+	n = 5;
+	CreateSemaphore("WaterTap", 1);
+	for (i=0; i<n; i++){
+		IDs[i] = Exec("student");
+	}
+	for (i=0; i<n; i++){
+		Join(IDs[i]);
+	}
 }

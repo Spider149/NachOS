@@ -29,5 +29,5 @@ void Sem::signal()
 // Tra ve ten cua Semaphore
 char* Sem::GetName()
 {
-    return name;
+    return this->name;
 }
