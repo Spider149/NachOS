@@ -243,7 +243,7 @@ ExceptionHandler(ExceptionType which)
 					}
 					if (type == 0 || type == 1){
 						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type) != -1){
-							cerr << "Open file " << fileName <<" success \n";
+							//cerr << "Open file " << fileName <<" success \n";
 							kernel->machine->WriteRegister(2, freeSlot);
 						} 
 					} else if (type == 2) {
@@ -272,7 +272,7 @@ ExceptionHandler(ExceptionType which)
 						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(nameAddr)){
 							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->closeFile(nameAddr);;
 							kernel->machine->WriteRegister(2, 0);
-							cerr<<"Close file success \n";
+							//cerr<<"Close file success \n";
 							increasePC();
 							return;
 						}

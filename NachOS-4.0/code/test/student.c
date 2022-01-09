@@ -3,24 +3,28 @@
 
 void main()
 {
-    int i, r, j, id;
+    int id, waitTime, fileID, size_out, i, j;
+    char* out;
+    char* tmp;
 
     id = GetPID();
+    out = "  ";
+    size_out = 2;
+    out[0] = (char)(id + '0');
 
     for (i=0; i<10; i++){
         Wait("WaterTap");
 
-        r = RandomNum() % 100000;
-        for (j=0; j<r; j++);
+        waitTime = RandomNum() % 100000;
+        for (j=0; j<waitTime; j++);
 
         PrintNum(id);
         PrintString("\n");
 
-        if (i==9){
-            PrintString("--- Sinh vien ");
-            PrintNum(id);
-            PrintString(" da lay nuoc xong ---\n");
-        }
+        fileID = Open("output.txt", 0);
+        Read(tmp, 300, fileID);
+        Write(out, size_out, fileID);
+        Close(fileID);
 
         Signal("WaterTap");
     }

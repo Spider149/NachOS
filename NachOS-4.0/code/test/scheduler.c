@@ -3,15 +3,22 @@
 
 void main()
 {
-	int n, i, j;
+	int numStudent, i, j;
+	//char* tmp;
 	int IDs[10];
 
-	n = 5;
 	CreateSemaphore("WaterTap", 1);
-	for (i=0; i<n; i++){
+	CreateFile("output.txt");
+
+	//Read(tmp, 1, 0);
+	//numStudent = (int) (tmp[1] - '0');
+	numStudent = ReadNum();
+
+	for (i=0; i<numStudent; i++){
 		IDs[i] = Exec("student");
 	}
-	for (i=0; i<n; i++){
+	
+	for (i=0; i<numStudent; i++){
 		Join(IDs[i]);
 	}
 }
