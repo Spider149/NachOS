@@ -640,7 +640,7 @@ interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
  ../machine/stats.h ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 stats.o: ../machine/stats.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -877,7 +877,8 @@ timer.o: ../machine/timer.cc /usr/include/stdc-predef.h \
  ../lib/list.h ../lib/list.cc ../machine/interrupt.h ../machine/stats.h \
  ../threads/alarm.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/synch.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h
 console.o: ../machine/console.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../machine/console.h ../lib/utility.h \
  ../machine/callback.h ../threads/main.h ../lib/debug.h ../lib/sysdep.h \
@@ -1000,7 +1001,7 @@ console.o: ../machine/console.cc /usr/include/stdc-predef.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 machine.o: ../machine/machine.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../machine/machine.h ../lib/utility.h \
  ../machine/translate.h ../threads/main.h ../lib/debug.h ../lib/sysdep.h \
@@ -1123,7 +1124,7 @@ machine.o: ../machine/machine.cc /usr/include/stdc-predef.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 mipssim.o: ../machine/mipssim.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -1246,7 +1247,7 @@ mipssim.o: ../machine/mipssim.cc /usr/include/stdc-predef.h \
  ../machine/stats.h ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 translate.o: ../machine/translate.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -1368,7 +1369,8 @@ translate.o: ../machine/translate.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/synch.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h
 network.o: ../machine/network.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../machine/network.h ../lib/utility.h \
  ../machine/callback.h ../threads/main.h ../lib/debug.h ../lib/sysdep.h \
@@ -1491,7 +1493,7 @@ network.o: ../machine/network.cc /usr/include/stdc-predef.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 disk.o: ../machine/disk.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../machine/disk.h ../lib/utility.h ../machine/callback.h ../lib/debug.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -1613,7 +1615,8 @@ disk.o: ../machine/disk.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../machine/interrupt.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/synch.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h
 alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/alarm.h ../lib/utility.h \
  ../machine/callback.h ../machine/timer.h ../threads/main.h \
@@ -1735,7 +1738,7 @@ alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  ../lib/list.h ../lib/list.cc ../machine/interrupt.h ../machine/stats.h \
  ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -1858,10 +1861,10 @@ kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h ../threads/synchlist.h \
- ../threads/synchlist.cc ../lib/libtest.h ../userprog/synchconsole.h \
- ../machine/console.h ../filesys/synchdisk.h ../machine/disk.h \
- ../network/post.h ../machine/network.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h \
+ ../threads/synchlist.h ../threads/synchlist.cc ../lib/libtest.h \
+ ../userprog/synchconsole.h ../machine/console.h ../filesys/synchdisk.h \
+ ../machine/disk.h ../network/post.h ../machine/network.h
 main.o: ../threads/main.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../threads/main.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -1983,7 +1986,8 @@ main.o: ../threads/main.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/synch.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h
 scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -2106,7 +2110,7 @@ scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/synch.h ../threads/thread.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -2228,7 +2232,7 @@ synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 synchlist.o: ../threads/synchlist.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/synchlist.h ../lib/list.h ../lib/debug.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -2350,8 +2354,9 @@ synchlist.o: ../threads/synchlist.cc /usr/include/stdc-predef.h \
  ../machine/interrupt.h ../machine/callback.h ../machine/stats.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/filetable.h \
- ../userprog/syscall.h ../userprog/errno.h ../userprog/stable.h \
- ../userprog/sem.h ../threads/synchlist.cc
+ ../userprog/syscall.h ../userprog/errno.h \
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h \
+ ../threads/synchlist.cc
 thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/thread.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -2473,8 +2478,8 @@ thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../machine/interrupt.h ../machine/callback.h \
  ../machine/stats.h ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/filetable.h \
- ../userprog/syscall.h ../userprog/errno.h ../userprog/stable.h \
- ../userprog/sem.h
+ ../userprog/syscall.h ../userprog/errno.h \
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 pcb.o: ../threads/pcb.cc /usr/include/stdc-predef.h ../threads/pcb.h \
  ../threads/thread.h ../lib/copyright.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -2596,40 +2601,36 @@ pcb.o: ../threads/pcb.cc /usr/include/stdc-predef.h ../threads/pcb.h \
  ../machine/interrupt.h ../machine/callback.h ../machine/stats.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../userprog/stable.h ../userprog/sem.h \
- ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h
+ ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
+ ../network/../filesys/openfile.h
 filetable.o: ../threads/filetable.cc /usr/include/stdc-predef.h \
  ../threads/filetable.h ../userprog/syscall.h ../lib/copyright.h \
- ../userprog/errno.h /usr/include/stdio.h \
- /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ ../userprog/errno.h ../network/../filesys/openfile.h ../lib/utility.h \
+ ../lib/sysdep.h /usr/include/c++/4.8/iostream \
+ /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
+ /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/bits/long-double.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h \
- /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
- /usr/include/x86_64-linux-gnu/bits/libio.h \
- /usr/include/x86_64-linux-gnu/bits/_G_config.h \
- /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/sys_errlist.h ../lib/utility.h \
- ../lib/sysdep.h /usr/include/c++/4.8/iostream \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h \
  /usr/include/c++/4.8/ostream /usr/include/c++/4.8/ios \
  /usr/include/c++/4.8/iosfwd /usr/include/c++/4.8/bits/stringfwd.h \
  /usr/include/c++/4.8/bits/memoryfwd.h \
  /usr/include/c++/4.8/bits/postypes.h /usr/include/c++/4.8/cwchar \
- /usr/include/wchar.h /usr/include/x86_64-linux-gnu/bits/floatn.h \
+ /usr/include/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
  /usr/include/c++/4.8/exception \
@@ -2651,7 +2652,8 @@ filetable.o: ../threads/filetable.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++locale.h \
  /usr/include/c++/4.8/clocale /usr/include/locale.h \
  /usr/include/x86_64-linux-gnu/bits/locale.h /usr/include/c++/4.8/cctype \
- /usr/include/ctype.h /usr/include/endian.h \
+ /usr/include/ctype.h /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endian.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap-16.h \
@@ -2711,8 +2713,12 @@ filetable.o: ../threads/filetable.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h \
  /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
  /usr/include/x86_64-linux-gnu/bits/sysmacros.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib-float.h /usr/include/string.h \
- /usr/include/strings.h ../network/../filesys/openfile.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-float.h /usr/include/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/libio.h \
+ /usr/include/x86_64-linux-gnu/bits/_G_config.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
+ /usr/include/strings.h
 ptable.o: ../threads/ptable.cc /usr/include/stdc-predef.h \
  ../threads/ptable.h ../lib/bitmap.h ../lib/copyright.h ../lib/utility.h \
  ../threads/pcb.h ../threads/thread.h ../lib/sysdep.h \
@@ -2835,7 +2841,7 @@ ptable.o: ../threads/ptable.cc /usr/include/stdc-predef.h \
  ../machine/interrupt.h ../machine/callback.h ../machine/stats.h \
  ../threads/alarm.h ../machine/timer.h ../userprog/stable.h \
  ../userprog/sem.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h
+ ../userprog/errno.h ../network/../filesys/openfile.h
 addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -2957,8 +2963,8 @@ addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/synch.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h \
- ../userprog/noff.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h ../userprog/noff.h
 exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -3080,8 +3086,9 @@ exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/synch.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h \
- ../userprog/ksyscall.h ../userprog/synchconsole.h ../machine/console.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h ../userprog/ksyscall.h \
+ ../userprog/synchconsole.h ../machine/console.h
 synchconsole.o: ../userprog/synchconsole.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../userprog/synchconsole.h ../lib/utility.h \
  ../machine/callback.h ../machine/console.h ../threads/synch.h \
@@ -3203,8 +3210,8 @@ synchconsole.o: ../userprog/synchconsole.cc /usr/include/stdc-predef.h \
  ../threads/kernel.h ../threads/scheduler.h ../machine/interrupt.h \
  ../machine/stats.h ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/filetable.h \
- ../userprog/syscall.h ../userprog/errno.h ../userprog/stable.h \
- ../userprog/sem.h
+ ../userprog/syscall.h ../userprog/errno.h \
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 sem.o: ../userprog/sem.cc /usr/include/stdc-predef.h ../userprog/sem.h \
  ../threads/synch.h ../lib/copyright.h ../threads/thread.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -3326,7 +3333,7 @@ sem.o: ../userprog/sem.cc /usr/include/stdc-predef.h ../userprog/sem.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h
+ ../network/../filesys/openfile.h ../userprog/stable.h
 stable.o: ../userprog/stable.cc /usr/include/stdc-predef.h \
  ../userprog/stable.h ../threads/synch.h ../lib/copyright.h \
  ../threads/thread.h ../lib/utility.h ../lib/sysdep.h \
@@ -3449,7 +3456,7 @@ stable.o: ../userprog/stable.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/sem.h
+ ../network/../filesys/openfile.h ../userprog/sem.h
 directory.o: ../filesys/directory.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/utility.h ../filesys/filehdr.h \
  ../machine/disk.h ../machine/callback.h ../filesys/pbitmap.h \
@@ -3690,7 +3697,8 @@ filehdr.o: ../filesys/filehdr.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../machine/interrupt.h ../machine/stats.h \
  ../threads/alarm.h ../machine/timer.h ../threads/ptable.h \
  ../threads/pcb.h ../threads/filetable.h ../userprog/syscall.h \
- ../userprog/errno.h ../userprog/stable.h ../userprog/sem.h
+ ../userprog/errno.h ../network/../filesys/openfile.h \
+ ../userprog/stable.h ../userprog/sem.h
 filesys.o: ../filesys/filesys.cc /usr/include/stdc-predef.h
 pbitmap.o: ../filesys/pbitmap.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../filesys/pbitmap.h ../lib/bitmap.h ../lib/utility.h \
@@ -3929,8 +3937,8 @@ synchdisk.o: ../filesys/synchdisk.cc /usr/include/stdc-predef.h \
  ../threads/kernel.h ../threads/scheduler.h ../machine/interrupt.h \
  ../machine/stats.h ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/ptable.h ../threads/pcb.h ../threads/filetable.h \
- ../userprog/syscall.h ../userprog/errno.h ../userprog/stable.h \
- ../userprog/sem.h
+ ../userprog/syscall.h ../userprog/errno.h \
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h
 post.o: ../network/post.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../network/post.h ../lib/utility.h ../machine/callback.h \
  ../machine/network.h ../threads/synchlist.h ../lib/list.h ../lib/debug.h \
@@ -4053,7 +4061,8 @@ post.o: ../network/post.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../machine/interrupt.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/filetable.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/stable.h ../userprog/sem.h ../threads/synchlist.cc
+ ../network/../filesys/openfile.h ../userprog/stable.h ../userprog/sem.h \
+ ../threads/synchlist.cc
 # DEPENDENCIES MUST END AT END OF FILE
 # IF YOU PUT STUFF HERE IT WILL GO AWAY
 # see make depend above

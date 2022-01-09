@@ -3,29 +3,47 @@
 
 void main()
 {
-	int numStudent, fileID, i, j;
+	int numStudent, outputFile, contactFile, i, j;
 	char* res;
+	char id;
 	int IDs[10];
 
 	CreateSemaphore("WaterTap", 1);
+	CreateSemaphore("send", 0);
+	CreateSemaphore("recv", 0);
+	CreateSemaphore("begin", 0);
 	CreateFile("output.txt");
-	fileID = Open("output.txt", 0);
+	CreateFile("contact.txt");
 
 	PrintString("Nhap so sinh vien: ");
 	numStudent = ReadNum();
 
-	//PrintString("-------------------------------\n");
+	for (i=1; i<=numStudent; i++) {
+		IDs[i] = Exec("student");
 
-	for (i=0; i<numStudent; i++) IDs[i] = Exec("student");
-	for (i=0; i<numStudent; i++) 
+		id = (char)(i + '0');
+		PrintString(id);
+		contactFile = Open("contact.txt", 0);
+		Write(&id, 1, contactFile);
+		Close(contactFile);
+
+		Signal("send");
+		Wait("recv");
+	}
+
+	PrintString("-------------------------------\n");
+	for (i=1; i<=numStudent; i++) Signal("begin");
+
+	for (i=1; i<=numStudent; i++) 
 		if (IDs[i] >= 0)
 			Join(IDs[i]);
 
-	//PrintString("-------------------------------\n");
+	PrintString("-------------------------------\n");
 
-	PrintString("Thu tu lay nuoc la: \n");
-	while(Read(res, 1, fileID) > 0) PrintString(res);
+	outputFile = Open("output.txt", 0);
+	PrintString("\nThu tu lay nuoc la: \n");
+	while(Read(res, 1, outputFile) > 0) PrintString(res);
 	PrintChar('\n');
 
-	Close(fileID);
+	Close(outputFile);
 }

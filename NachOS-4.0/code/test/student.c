@@ -3,16 +3,19 @@
 
 void main()
 {
-    int id, waitTime, fileID, size_out, i, j, k;
-    char* out;
+    int waitTime, outputFile, contactFile, i, j, k;
+    char id;
     char* tmp;
 
-    id = GetPID();
-    out = "  ";
-    size_out = 2;
-    out[0] = (char)(id + '0');
+    Wait("send");
+    contactFile = Open("contact.txt", 0);
+    Read(&id, 1, contactFile);
+	Close(contactFile);
+    Signal("recv");
+    //PrintString("Here");
+    Wait("begin");
 
-    fileID = Open("output.txt", 0);
+    outputFile = Open("output.txt", 0);
 
     for (i=0; i<10; i++){
         Wait("WaterTap");
@@ -20,19 +23,21 @@ void main()
         waitTime = RandomNum() % 100000;
         for (j=0; j<waitTime; j++);
 
-        for (k=1; k<id; k++) PrintString("      ");
-        PrintNum(id);
+        for (k=1; k<(int)(id-'0'); k++) PrintString("      ");
+        PrintChar(id);
         PrintString("\n");
 
-        while(Read(tmp, 1, fileID) > 0);
-        Write(out, size_out, fileID);
+        while(Read(tmp, 1, outputFile) > 0);
+        tmp = " ";
+        Write(&id, 1, outputFile);
+        Write(tmp, 1, outputFile);
 
         Signal("WaterTap");
     }
-    Close(fileID);
+    Close(outputFile);
     
     PrintString("(Student ");
-    PrintNum(id);
+    PrintChar(id);
     PrintString(" done)\n");
 
     Exit(0);

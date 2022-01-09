@@ -86,7 +86,6 @@ ExceptionHandler(ExceptionType which)
 					DEBUG(dbgSys, "Shutdown, initiated by user program.\n");
 					printf("\n\n Shutdown, initiated by user program.");
 					SysHalt();
-
 					ASSERTNOTREACHED();
 					break;
 
@@ -142,8 +141,6 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 					break;
 
-
-
 				case SC_Add:
 					DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
 		
@@ -157,10 +154,10 @@ ExceptionHandler(ExceptionType which)
 					
 					/* Modify return point */
 					increasePC();
-
 					return;
 					ASSERTNOTREACHED();
 					break;
+
 
 				case SC_CreateFile: {
 					int virtAddr;
@@ -168,7 +165,7 @@ ExceptionHandler(ExceptionType which)
 					DEBUG('a', "\n SC_CreateFile call ...");
 					DEBUG('a', "\n Reading virtual address of filename");
 
-					virtAddr = kernel->machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
+					virtAddr = kernel->machine->ReadRegister(4); // Đọc địa chỉ của file từ thanh ghi R4
 					DEBUG('a', "\n Reading filename.");
 					
 					//Sao chep khong gian bo nho User sang System, voi do dang toi da la (32 + 1) bytes
@@ -192,17 +189,6 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 					DEBUG('a', "\n Finish reading filename.");
-					
-					/*if (!kernel->fileSystem->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
-					{
-						//Tao file that bai
-						printf("\n Error create file '%s'", filename);
-						kernel->machine->WriteRegister(2, -1);
-						delete filename;
-						increasePC();
-						return;
-						//break;
-					}*/
 
 					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
 					{
@@ -220,14 +206,14 @@ ExceptionHandler(ExceptionType which)
 					delete filename;
 					increasePC(); //Day thanh ghi lui ve sau de tiep tuc ghi
 					return;
-				}
+					ASSERTNOTREACHED();
 					break;
+				}
 
-				case SC_Open:{
+				case SC_Open: {
 					//OpenFileId Open(char *name, int type)
 					//name: Thanh ghi so 4
 					//type: Thanh ghi so 5
-
 					int nameAddr = kernel->machine->ReadRegister(4);
 					int type = kernel->machine->ReadRegister(5);
 					char* fileName;
@@ -259,19 +245,17 @@ ExceptionHandler(ExceptionType which)
 
 					/* Modify return point */
 					increasePC();
-
 					return;
-		
 					ASSERTNOTREACHED();
-				}
 					break;
+				}
 
-				case SC_Close:{
+				case SC_Close: {
 					int nameAddr = kernel->machine->ReadRegister(4);
 					int index = kernel->fileSystem->index;
 					if (nameAddr >= 0 && nameAddr <= 9 && index >= nameAddr){
-						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(nameAddr)){
-							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->closeFile(nameAddr);;
+						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(nameAddr)){
+							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Close(nameAddr);;
 							kernel->machine->WriteRegister(2, 0);
 							//cerr<<"Close file success \n";
 							increasePC();
@@ -283,12 +267,10 @@ ExceptionHandler(ExceptionType which)
 
 					/* Modify return point */
 					increasePC();
-
 					return;
-		
 					ASSERTNOTREACHED();
-				}
 					break;
+				}
 				
 				case SC_Read:{
 					int virtAddr = kernel->machine->ReadRegister(4); 
@@ -305,7 +287,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id) == NULL)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id) == NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
@@ -313,7 +295,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 3)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
 					{
 						printf("\nFile stdout khong the doc");
 						kernel->machine->WriteRegister(2, -1);
@@ -321,10 +303,10 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
+					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 2)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
 					{
 						int i = 0;
 						while(i < charcount){
@@ -341,9 +323,9 @@ ExceptionHandler(ExceptionType which)
 						return;
 					} 
 
-					if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->Read(buffer, charcount)) > 0)
+					if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Read(buffer, charcount)) > 0)
 					{
-						newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
+						newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 						System2User(virtAddr, newPos - oldPos, buffer); 
 						kernel->machine->WriteRegister(2, newPos - oldPos);
 					}
@@ -353,11 +335,10 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 					return;
 					ASSERTNOTREACHED();
-				}
 					break;
+				}
 
-				case SC_Write:
-				{
+				case SC_Write: {
 					int virtAddr = kernel->machine->ReadRegister(4); 
 					int charcount =  kernel->machine->ReadRegister(5);
 					int id =  kernel->machine->ReadRegister(6);
@@ -371,35 +352,35 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)== NULL)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)== NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 1 || kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 2)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 1 || kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
 					{
 						printf("\nKhong the ghi vao file chi doc va file stdin");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
+					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 0)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 0)
 					{
-						if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->Write(buffer, charcount)) > 0)
+						if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Write(buffer, charcount)) > 0)
 						{
-							newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->GetCurrentPos();
+							newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 							kernel->machine->WriteRegister(2, newPos - oldPos);
 							delete buffer;
 							increasePC();
 							return;
 						}
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(id)->type == 3)
+					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
 					{
 						int i = 0;
 						while(i<charcount){
@@ -415,12 +396,13 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
+					break;
 				}
-				break;
+				
 				/* Tao cau truc du lieu de luu 10 semaphore
 				* Tra ve 0 neu thanh cong, nguoc lai tra ve 1
 				*/
-				case SC_CreateSemaphore:{
+				case SC_CreateSemaphore: {
 					int virtAddr = kernel->machine->ReadRegister(4);
 					int semVal = kernel->machine->ReadRegister(5);
 					char* name = User2System(virtAddr, 33);
@@ -448,15 +430,15 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 					return;
 					ASSERTNOTREACHED();
+					break;
 				}
-				break;
 
 				/* Name: Ten cua Semaphore
 				*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
 				*   Wait() -- release the lock, relinquish the CPU until signaled, 
 				*		then re-acquire the lock
 				*/
-				case SC_Wait:{
+				case SC_Wait: {
 					int virtAddr = kernel->machine->ReadRegister(4);
 					char* name = User2System(virtAddr, 33);
 					if (name == NULL){
@@ -483,15 +465,15 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 					return;
 					ASSERTNOTREACHED();
+					break;
 				}
-				break;
 
 				/* Name: Ten cua Semaphore
 				* Signal() -- wake up a thread, if there are any waiting on 
 				*		the condition
 				*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
 				*/
-				case SC_Signal:{
+				case SC_Signal: {
 					int virtAddr = kernel->machine->ReadRegister(4);
 					char* name = User2System(virtAddr, 33);
 					if (name == NULL){
@@ -518,11 +500,10 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 					return;
 					ASSERTNOTREACHED();
+					break;
 				}
-				break;
 
-				case SC_Exec:
-				{
+				case SC_Exec: {
 					// Input: vi tri int
 					// Output: Fail return -1, Success: return id cua thread dang chay
 					// SpaceId Exec(char *name);
@@ -560,7 +541,7 @@ ExceptionHandler(ExceptionType which)
 				}
 				break;
 
-				case SC_Join:{
+				case SC_Join: {
 					int id = kernel->machine->ReadRegister(4);
 					int res = kernel->pTab->JoinUpdate(id);
 
@@ -568,10 +549,10 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 					return;
 					ASSERTNOTREACHED();
+					break;
 				}
-				break;
 
-				case SC_Exit:{
+				case SC_Exit: {
 					int status = kernel->machine->ReadRegister(4);
 
 					if(status != 0){
@@ -585,8 +566,8 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 					return;
 					ASSERTNOTREACHED();
+					break;
 				}
-				break;
 				
 
 				case SC_GetPID:
@@ -596,6 +577,7 @@ ExceptionHandler(ExceptionType which)
 					return;
 					ASSERTNOTREACHED();
 					break;
+
 
 
 				default:

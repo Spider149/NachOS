@@ -3,11 +3,10 @@
 #include "utility.h"
 #include "sysdep.h"
 #include "copyright.h"
-#include "../filesys/openfile.h"
     
 FileTable::FileTable(){
-    fileTable = new OpenFile*[10];
-    for (int i = 0; i < 10; ++i)
+    fileTable = new OpenFile*[MAX_OPENFILE];
+    for (int i = 0; i < MAX_OPENFILE; ++i)
         fileTable[i] = NULL;
     this->Create("stdin", 0);
     this->Create("stdout", 0);
@@ -23,7 +22,7 @@ bool FileTable::Create(char *name, int initialSize) {
     return TRUE; 
 }
 
-OpenFile* FileTable::getOpenFileId(int id){
+OpenFile* FileTable::getFileById(int id){
     return fileTable[id];
 }
 
@@ -59,23 +58,18 @@ int FileTable::Open(char *name) {
 
 OpenFile* FileTable::OpenF(char* name){
     int fileDescriptor = OpenForReadWrite(name, FALSE);
-
     if (fileDescriptor == -1) return NULL;
     return new OpenFile(fileDescriptor);
 }
 OpenFile* FileTable::OpenF(char* name, int type){
     int fileDescriptor = OpenForReadWrite(name, FALSE);
-
     if (fileDescriptor == -1) return NULL;
     return new OpenFile(fileDescriptor);
 }
 int FileTable::FindFreeSlot(){
-    for(int i = 2; i < 10; i++)
-	{
-		if(fileTable[i] == NULL) {
+    for(int i = 2; i < MAX_OPENFILE; i++)
+		if(fileTable[i] == NULL)
             return i;
-        }
-	}
     printf("No free slot on file table \n");
 	return -1;
 }
@@ -83,7 +77,7 @@ bool FileTable::Remove(char* name){
     return Unlink(name) == 0; 
 }
 
-void FileTable::closeFile(int id){
+void FileTable::Close(int id){
     if (fileTable[id] != NULL){
         delete fileTable[id];
         fileTable[id] = NULL;
@@ -91,8 +85,8 @@ void FileTable::closeFile(int id){
 }
     
 FileTable::~FileTable(){
-    for (int i = 0; i < 10; ++i)
-			if (fileTable[i] != NULL)
-				delete fileTable[i];
-		delete[] fileTable;
+    for (int i = 0; i < MAX_OPENFILE; ++i)
+        if (fileTable[i] != NULL)
+            delete fileTable[i];
+    delete[] fileTable;
 }
