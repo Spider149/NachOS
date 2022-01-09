@@ -30,7 +30,7 @@ int SysAdd(int op1, int op2)
 
 int SysRandomNum()
 {
-  srand(time(NULL));
+  srand(time(NULL) + kernel->stats->totalTicks);
   int r = rand() % 2147483647 + 1;
   return r;
 }

@@ -159,9 +159,7 @@ ExceptionHandler(ExceptionType which)
 					increasePC();
 
 					return;
-		
 					ASSERTNOTREACHED();
-
 					break;
 
 				case SC_CreateFile: {
@@ -245,7 +243,7 @@ ExceptionHandler(ExceptionType which)
 					}
 					if (type == 0 || type == 1){
 						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type) != -1){
-							cerr << "Open file " << fileName <<" success \n";
+							//cerr << "Open file " << fileName <<" success \n";
 							kernel->machine->WriteRegister(2, freeSlot);
 						} 
 					} else if (type == 2) {
@@ -274,7 +272,7 @@ ExceptionHandler(ExceptionType which)
 						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getOpenFileId(nameAddr)){
 							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->closeFile(nameAddr);;
 							kernel->machine->WriteRegister(2, 0);
-							cerr<<"Close file success \n";
+							//cerr<<"Close file success \n";
 							increasePC();
 							return;
 						}
@@ -422,7 +420,6 @@ ExceptionHandler(ExceptionType which)
 				* Tra ve 0 neu thanh cong, nguoc lai tra ve 1
 				*/
 				case SC_CreateSemaphore:{
-					printf("hello \n");
 					int virtAddr = kernel->machine->ReadRegister(4);
 					int semVal = kernel->machine->ReadRegister(5);
 					char* name = User2System(virtAddr, 33);
@@ -434,9 +431,9 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					printf("Begin create semtab \n");
+					
 					int res = kernel->semTab->Create(name, semVal);
-					printf("End create semtab \n");
+					
 					if (res == -1){
 						DEBUG('a', "Khong the khoi tao semaphore \n");
 						printf("Khong the khoi tao semaphore \n");
@@ -550,8 +547,6 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					printf("ExecUpdate\n");
-
 					// Return child process id
 					int id = kernel->pTab->ExecUpdate(name); 
 					kernel->machine->WriteRegister(2,id);
@@ -589,6 +584,17 @@ ExceptionHandler(ExceptionType which)
 					ASSERTNOTREACHED();
 				}
 				break;
+				
+
+				case SC_GetPID:
+					result = kernel->currentThread->processID;
+					kernel->machine->WriteRegister(2, (int)result);
+					increasePC();
+					return;
+					ASSERTNOTREACHED();
+					break;
+
+
 				default:
 					cerr << "Unexpected system call " << type << "\n";
 					break;
