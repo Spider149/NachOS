@@ -244,7 +244,7 @@ ExceptionHandler(ExceptionType which)
 					if (type == 0 || type == 1){
 						int fid = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type);
 						if ( fid != -1){
-							cerr << "Open file " << fileName <<" success \n";
+							//cerr << "Open file " << fileName <<" success \n";
 							kernel->machine->WriteRegister(2, fid);
 						} 
 					} else if (type == 2) {
