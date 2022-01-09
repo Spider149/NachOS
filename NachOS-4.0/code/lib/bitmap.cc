@@ -90,7 +90,6 @@ bool
 Bitmap::Test(int which) const
 {
     ASSERT(which >= 0 && which < numBits);
-    
     if (map[which / BitsInWord] & (1 << (which % BitsInWord))) {
 	return TRUE;
     } else {

@@ -2,12 +2,16 @@
 
 // Tim ID cua Semaphore "name". Neu khong co tra ve -1
 int STable::FindByName(char* name){
-    for(int id=0; id<MAX_SEMAPHORE; id++)
+    for(int id=0; id<MAX_SEMAPHORE; id++){
 		// Kiem tra o thu i da duoc nap semaphore chua
+		printf("Stable find name \n");
 		if(bm->Test(id))
 			// Neu co thi tien hanh so sanh name voi name cua semaphore trong semTab
 			if(strcmp(name, semTab[id]->GetName()) == 0)
 				return id;
+		printf(".... \n");
+	}
+	printf("Out \n");
     // Neu khong co thi tra ve -1
     return -1;
 }
@@ -34,23 +38,25 @@ STable::~STable() {
 // Kiem tra Semaphore "name" chua ton tai thi tao Semaphore moi
 int STable::Create(char* name, int init) {
 	// Check da ton tai semaphore nay chua?
+	printf("Toi day r ne 1\n");
     if (FindByName(name) >= 0) {
         printf("Da ton tai semaphore");
         return -1;
-    }
-
+	}
+	printf("Toi day r ne 2\n");
 	// Tim 1 slot tren bang semTab
     // Neu tim thay thi danh dau da su dung
 	// Neu khong tim thay thi tra ve -1
 	int id = FindFreeSlot();
-	
+	printf("Toi day r ne 3\n");
     // Neu khong tim thay
 	if(id < 0) {
 		return -1;
 	}
-
+	
 	// Neu tim thay slot trong thi nap Semaphore vao semTab[id]
 	semTab[id] = new Sem(name, init);
+	printf("Toi day roi ne 4\n");
 	return 0;
 }
 

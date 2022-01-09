@@ -9,4 +9,5 @@ void main()
 	pongPID = Exec("pong");
 	Join(pingPID);
 	Join(pongPID);
+	PrintNum(CreateSemaphore("hi", 4));
 }
