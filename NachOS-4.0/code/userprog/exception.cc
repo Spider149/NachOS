@@ -242,9 +242,10 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 					if (type == 0 || type == 1){
-						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type) != -1){
-							//cerr << "Open file " << fileName <<" success \n";
-							kernel->machine->WriteRegister(2, freeSlot);
+						int fid = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type);
+						if ( fid != -1){
+							cerr << "Open file " << fileName <<" success \n";
+							kernel->machine->WriteRegister(2, fid);
 						} 
 					} else if (type == 2) {
 							cerr << "Sdtin mode \n";
