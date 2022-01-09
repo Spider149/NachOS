@@ -14,7 +14,7 @@ PTable::PTable(int size)
     for(int i=0;i<MAX_PROCESS;i++){
         pcb[i]=0;
     }
-
+	// tao pcb dau tien trong ptable
 	bm->Mark(0);
 
 	pcb[0] = new PCB(0);
@@ -39,13 +39,14 @@ int PTable::ExecUpdate(char* name)
 {
 	bmsem->P();
 
+	//kiem tra xem ten tien trinh co null khong
 	if(name == NULL)
 	{
 		printf("\nPTable::Exec : Can't not execute name is NULL.\n");
 		bmsem->V();
 		return -1;
 	}
-
+	// kiem tra xem tien trinh co goi lai chinh no hay khong
 	if( strcmp(name,"./test/scheduler") == 0 || strcmp(name,kernel->currentThread->getName()) == 0 )
 	{
 		printf("\nPTable::Exec : Can't not execute itself.\n");		
@@ -56,14 +57,16 @@ int PTable::ExecUpdate(char* name)
 	// Tìm slot trống trong bảng Ptable.
 	int index = this->GetFreeSlot();
 
-    // Check if have free slot
+
 	if(index < 0)
-	{
+	{	
+		// khong tim duoc slot
 		printf("\nPTable::Exec :There is no free slot.\n");
 		bmsem->V();
 		return -1;
 	}
 
+	// tao mot pcb moi
 	pcb[index] = new PCB(index);
 	pcb[index]->SetFileName(name);
     pcb[index]->parentID = kernel->currentThread->processID;
@@ -72,9 +75,7 @@ int PTable::ExecUpdate(char* name)
 	// Gọi thực thi phương thức Exec của lớp PCB.
 	int pid = pcb[index]->Exec(name,index);
 
-	// Gọi bmsem->V()
 	bmsem->V();
-	// Trả về kết quả thực thi của PCB->Exec.
 	return pid;
 }
 
@@ -87,25 +88,22 @@ int PTable::JoinUpdate(int id)
 		printf("\nPTable::JoinUpdate : id = %d", id);
 		return -1;
 	}
-	// Check if process running is parent process of process which joins
+
 	if(kernel->currentThread->processID != pcb[id]->parentID)
 	{
 		printf("\nPTable::JoinUpdate Can't join in process which is not it's parent process.\n");
 		return -1;
 	}
 
-    	// Tăng numwait và gọi JoinWait() để chờ tiến trình con thực hiện.
+    // Tăng numwait và gọi JoinWait() để chờ tiến trình con thực hiện.
 	// Sau khi tiến trình con thực hiện xong, tiến trình đã được giải phóng
 	pcb[pcb[id]->parentID]->IncNumWait();
-
-
-	//pcb[id]->boolBG = 1;
 
 	pcb[id]->JoinWait();
 
 	// Xử lý exitcode.	
 	int ec = pcb[id]->GetExitCode();
-        // ExitRelease() để cho phép tiến trình con thoát.
+    // ExitRelease() để cho phép tiến trình con thoát.
 	pcb[id]->ExitRelease();
 
     // Successfully
@@ -117,12 +115,12 @@ int PTable::ExitUpdate(int exitcode)
 	int id = kernel->currentThread->processID;
 	if(id == 0)
 	{
-
 		kernel->currentThread->freeSpace();		
 		kernel->interrupt->Halt();
 		return 0;
 	}
 
+	// kiem tra tien trinh co ton tai khong
     if(IsExist(id) == false)
 	{
 		printf("\nPTable::ExitUpdate: This %d is not exist. Try again?", id);
@@ -137,7 +135,6 @@ int PTable::ExitUpdate(int exitcode)
     // Gọi JoinRelease để giải phóng tiến trình cha đang đợi nó(nếu có) và ExitWait() để xin tiến trình cha
     // cho phép thoát.
 	pcb[id]->JoinRelease();
-    // 
 	pcb[id]->ExitWait();
 
 	Remove(id);

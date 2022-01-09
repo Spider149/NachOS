@@ -3,7 +3,7 @@
 #include "thread.h"
 #include "addrspace.h"
 
-void StartProcess_2(int id)
+void StartProcess(int id)
 {
 	char* fileName = kernel->pTab->getFileName(id);
 
@@ -103,6 +103,8 @@ void PCB::ExitRelease()
     exitsem->V();
 }
 
+// dung mutex de bao ve bien numwait
+
 void PCB::IncNumWait()
 {
 	multex->P();
@@ -133,23 +135,7 @@ int PCB::Exec(char* filename, int id)
 
 	this->thread->processID = id;
 	this->parentID = kernel->currentThread->processID;
- 	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)this->thread->processID);
-	// OpenFile* executable = kernel->fileSystem->Open(filename);
-	// AddrSpace* space;
-
-	// if(executable==NULL){
-	// 	printf("Unable to open %s\n",filename);
-	// }
-	// else {
-	// 	space = new AddrSpace(executable);
-	// 	kernel->currentThread->space = space;
-	// 	delete executable;
-	// 	space->InitRegisters();
-	// 	space->RestoreState();
-	// 	kernel->machine->Run();
-	// 	ASSERT(FALSE);
-	// }
-
+ 	this->thread->Fork((VoidFunctionPtr)StartProcess,(void*)this->thread->processID);
     multex->V();
 	return id;
 
