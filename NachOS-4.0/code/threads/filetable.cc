@@ -33,9 +33,11 @@ int FileTable::Open(char* name, int type){
 
 	if (fileDescriptor == -1) return -1;
 	int freeSlot = FindFreeSlot();
-    fileTable[freeSlot] = new OpenFile(fileDescriptor, type);
-    if (fileTable[freeSlot] != NULL)
-        return freeSlot;
+    if(freeSlot != -1){
+        fileTable[freeSlot] = new OpenFile(fileDescriptor, type);
+        if (fileTable[freeSlot] != NULL)
+            return freeSlot;
+    }
     return -1;
 }
 
