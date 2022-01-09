@@ -1,10 +1,11 @@
 #ifndef STABLE_H
 #define STABLE_H
-#define MAX_SEMAPHORE 10
 
 #include "synch.h"
 #include "sem.h"
 #include "bitmap.h"
+
+#define MAX_SEMAPHORE 10
 
 class Sem;
 
