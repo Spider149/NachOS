@@ -297,6 +297,7 @@ ExceptionHandler(ExceptionType which)
 					int newPos;
 					int oldPos;
 
+					// kiem tra index cua file co hop le khong
 					if (id < 0 || id > 9) {
 						printf("\nFile id nam ngoai bang mo ta file");
 						kernel->machine->WriteRegister(2, -1);
@@ -304,6 +305,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
+					// kiem tra xem file co ton tai khong
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id) == NULL)
 					{
 						printf("\nFile khong ton tai");
@@ -312,6 +314,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
+					// neu la file stdout thi khong cho doc
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
 					{
 						printf("\nFile stdout khong the doc");
@@ -320,9 +323,12 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
+
+					//lay vi tri hien tai cua con tro file
 					oldPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
+					// neu la file stdin, tuc la doc tu ban phim, dung synchconsolein
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
 					{
 						int i = 0;
@@ -339,6 +345,8 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					} 
+
+					// doc binh thuong, lay vi tri con tro sau khi doc de tinh ra so ky tu doc duoc thuc su
 
 					if ((kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Read(buffer, charcount)) > 0)
 					{
@@ -363,6 +371,7 @@ ExceptionHandler(ExceptionType which)
 					int oldPos;
 					int newPos;
 					char *buffer;
+					// kiem tra xem index file co hop le khong
 					if (id < 0 || id > 9) 
 					{
 						printf("\nFile id nam ngoai bang mo ta file");
@@ -370,6 +379,7 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
+					// kiem tra xem file co ton tai khong
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)== NULL)
 					{
 						printf("\nFile khong ton tai");
@@ -377,6 +387,7 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
+					// khong cho phep ghi vao file chi doc va stdin
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 1 || kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
 					{
 						printf("\nKhong the ghi vao file chi doc va file stdin");
@@ -384,13 +395,17 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
+					// lay vi tri hien tai cua con tro trong file
 					oldPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
+					// chuyen tu vung nho user sang system
 					buffer = User2System(virtAddr, charcount);
 
+					//neu la file doc va ghi
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 0)
 					{
 						if ((kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Write(buffer, charcount)) > 0)
 						{
+							//lay vi tri moi cua con tro sau khi doc de tinh so ky tu doc duoc thuc su
 							newPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 							kernel->machine->WriteRegister(2, newPos - oldPos);
 							delete buffer;
@@ -398,6 +413,7 @@ ExceptionHandler(ExceptionType which)
 							return;
 						}
 					}
+					// neu ghi vao file stdout, thi dung synchconsoleout de xuat cac ky tu ra man hinh
 					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
 					{
 						int i = 0;
@@ -423,9 +439,11 @@ ExceptionHandler(ExceptionType which)
 					// Output: Fail return -1, Success: return id cua thread dang chay
 					// SpaceId Exec(char *name);
 					int virtAddr;
-					virtAddr = kernel->machine->ReadRegister(4);	// doc dia chi ten chuong trinh tu thanh ghi r4
+					virtAddr = kernel->machine->ReadRegister(4);	
 					char* name;
-					name = User2System(virtAddr, MaxFileLength + 1); // Lay ten chuong trinh, nap vao kernel
+
+					//lay ten chuong trinh nap vao kernel
+					name = User2System(virtAddr, MaxFileLength + 1); 
 			
 					if(name == NULL)
 					{
@@ -436,6 +454,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
+					// kiem tra xem file nay co ton tai trong he thong khong
 					OpenFile* tmp = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->OpenF(name);
 					if (tmp == NULL)
 					{
@@ -446,7 +465,7 @@ ExceptionHandler(ExceptionType which)
 					}
 					tmp->~OpenFile();
 
-					// Return child process id
+					
 					int id = kernel->pTable->ExecUpdate(name); 
 					kernel->machine->WriteRegister(2,id);
 
