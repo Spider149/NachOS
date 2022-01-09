@@ -190,7 +190,7 @@ ExceptionHandler(ExceptionType which)
 					}
 					DEBUG('a', "\n Finish reading filename.");
 
-					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Create(filename, 0)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
+					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Create(filename, 0)) //Tao file bang ham Create cua fileTable, tra ve ket qua
 					{
 						//Tao file that bai
 						printf("\n Error create file '%s'", filename);
@@ -252,10 +252,9 @@ ExceptionHandler(ExceptionType which)
 
 				case SC_Close: {
 					int nameAddr = kernel->machine->ReadRegister(4);
-					int index = kernel->fileSystem->index;
-					if (nameAddr >= 0 && nameAddr <= 9 && index >= nameAddr){
+					if (nameAddr >= 0 && nameAddr <= 9){
 						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(nameAddr)){
-							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Close(nameAddr);;
+							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Close(nameAddr);
 							kernel->machine->WriteRegister(2, 0);
 							//cerr<<"Close file success \n";
 							increasePC();
@@ -569,7 +568,7 @@ ExceptionHandler(ExceptionType which)
 					break;
 				}
 				
-				
+
 
 				default:
 					cerr << "Unexpected system call " << type << "\n";
