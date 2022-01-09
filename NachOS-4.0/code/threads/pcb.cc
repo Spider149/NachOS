@@ -5,7 +5,7 @@
 
 void StartProcess(int id)
 {
-	char* fileName = kernel->pTab->getFileName(id);
+	char* fileName = kernel->pTable->getFileName(id);
 
 	AddrSpace *space;
 	space = new AddrSpace(fileName);

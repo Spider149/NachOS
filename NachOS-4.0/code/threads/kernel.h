@@ -64,8 +64,8 @@ class Kernel {
     PostOfficeOutput *postOfficeOut;
     Semaphore *addrLock;      // semaphore
     Bitmap *gPhysPageBitmap;  // quản lý các frame
-    PTable *pTab;		          // quản lý các process
-    STable *semTab;		        // quản lý các semaphore
+    PTable *pTable;		        // quản lý các process
+    STable *sTable;		        // quản lý các semaphore
 
     int hostName;               // machine identifier
 

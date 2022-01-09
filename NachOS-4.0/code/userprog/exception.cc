@@ -190,7 +190,7 @@ ExceptionHandler(ExceptionType which)
 					}
 					DEBUG('a', "\n Finish reading filename.");
 
-					if (!kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Create(filename, 0)) //Tao file bang ham Create cua fileTable, tra ve ket qua
+					if (!kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->Create(filename, 0)) //Tao file bang ham Create cua fileTable, tra ve ket qua
 					{
 						//Tao file that bai
 						printf("\n Error create file '%s'", filename);
@@ -221,7 +221,7 @@ ExceptionHandler(ExceptionType which)
 					fileName = User2System(nameAddr,256);
 
 					//Tim slot trong trong bang mo ta file fileTable
-					freeSlot = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->FindFreeSlot();
+					freeSlot = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->FindFreeSlot();
 					//Neu khong co slot trong
 					if (freeSlot == -1){
 						//That bai tra ve -1
@@ -233,7 +233,7 @@ ExceptionHandler(ExceptionType which)
 					//Xu ly khi loai file duoc mo la: 0: file chi doc, 1: file doc va ghi
 					if (type == 0 || type == 1){
 						//Mo file bang phuong thuc Open cua fileTable
-						int fid = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type);
+						int fid = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type);
 						if ( fid != -1){
 							//cerr << "Open file " << fileName <<" success \n";
 							//Thanh cong tra ve OpenFileId
@@ -266,9 +266,9 @@ ExceptionHandler(ExceptionType which)
 					//Chi xu ly khi id cua file nam trong [0, 9]
 					if (nameAddr >= 0 && nameAddr <= 9){
 						//Neu mo file thanh cong
-						if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(nameAddr)){
+						if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(nameAddr)){
 							//Goi ham xoa file cua fileTable
-							kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->Close(nameAddr);
+							kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->Close(nameAddr);
 							//Thanh cong tra ve 0
 							kernel->machine->WriteRegister(2, 0);
 							//cerr<<"Close file success \n";
@@ -304,7 +304,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id) == NULL)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id) == NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
@@ -312,7 +312,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
 					{
 						printf("\nFile stdout khong the doc");
 						kernel->machine->WriteRegister(2, -1);
@@ -320,10 +320,10 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
+					oldPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
 					{
 						int i = 0;
 						while(i < charcount){
@@ -340,9 +340,9 @@ ExceptionHandler(ExceptionType which)
 						return;
 					} 
 
-					if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Read(buffer, charcount)) > 0)
+					if ((kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Read(buffer, charcount)) > 0)
 					{
-						newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
+						newPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 						System2User(virtAddr, newPos - oldPos, buffer); 
 						kernel->machine->WriteRegister(2, newPos - oldPos);
 					}
@@ -370,35 +370,35 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)== NULL)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)== NULL)
 					{
 						printf("\nFile khong ton tai");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 1 || kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 1 || kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 2)
 					{
 						printf("\nKhong the ghi vao file chi doc va file stdin");
 						kernel->machine->WriteRegister(2, -1);
 						increasePC();
 						return;
 					}
-					oldPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
+					oldPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 					buffer = User2System(virtAddr, charcount);
 
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 0)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 0)
 					{
-						if ((kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Write(buffer, charcount)) > 0)
+						if ((kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->Write(buffer, charcount)) > 0)
 						{
-							newPos = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
+							newPos = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->GetCurrentPos();
 							kernel->machine->WriteRegister(2, newPos - oldPos);
 							delete buffer;
 							increasePC();
 							return;
 						}
 					}
-					if (kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
+					if (kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->getFileById(id)->type == 3)
 					{
 						int i = 0;
 						while(i<charcount){
@@ -436,7 +436,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 
-					OpenFile* tmp = kernel->pTab->getPCB(kernel->currentThread->processID)->getFileTable()->OpenF(name);
+					OpenFile* tmp = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->OpenF(name);
 					if (tmp == NULL)
 					{
 						printf("\nExec:: Can't open this file.");
@@ -447,7 +447,7 @@ ExceptionHandler(ExceptionType which)
 					tmp->~OpenFile();
 
 					// Return child process id
-					int id = kernel->pTab->ExecUpdate(name); 
+					int id = kernel->pTable->ExecUpdate(name); 
 					kernel->machine->WriteRegister(2,id);
 
 					delete[] name;	
@@ -462,7 +462,7 @@ ExceptionHandler(ExceptionType which)
 					int id = kernel->machine->ReadRegister(4);
 					
 					//Goi ham JoinUpdate cua PTable
-					int res = kernel->pTab->JoinUpdate(id);
+					int res = kernel->pTable->JoinUpdate(id);
 
 					//Tra lai ket qua la res
 					kernel->machine->WriteRegister(2, res);
@@ -484,7 +484,7 @@ ExceptionHandler(ExceptionType which)
 					}
 
 					//Goi ham ExitUpdate cua PTable
-					int res = kernel->pTab->ExitUpdate(status);
+					int res = kernel->pTable->ExitUpdate(status);
 
 					//Giai phong vung nho
 					kernel->currentThread->freeSpace();
@@ -515,7 +515,7 @@ ExceptionHandler(ExceptionType which)
 						return;
 					}
 					
-					int res = kernel->semTab->Create(name, semVal);
+					int res = kernel->sTable->Create(name, semVal);
 					
 					if (res == -1){
 						DEBUG('a', "Khong the khoi tao semaphore \n");
@@ -549,7 +549,7 @@ ExceptionHandler(ExceptionType which)
 					}
 
 					//Goi ham Wait cua STable
-					int res = kernel->semTab->Wait(name);
+					int res = kernel->sTable->Wait(name);
 
 					//Neu Wait that bai
 					if (res == -1){
@@ -584,7 +584,7 @@ ExceptionHandler(ExceptionType which)
 					}
 
 					//Goi ham Signal cua STable
-					int res = kernel->semTab->Signal(name);
+					int res = kernel->sTable->Signal(name);
 
 					//Neu Signal that bai
 					if (res == -1){
