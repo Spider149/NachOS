@@ -46,4 +46,6 @@ void main()
 	PrintChar('\n');
 
 	Close(outputFile);
+
+    Exit(0);
 }

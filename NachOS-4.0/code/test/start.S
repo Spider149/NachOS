@@ -226,14 +226,6 @@ Signal:
 	j	$31
 	.end Signal
 
-	.globl GetPID
-	.ent	GetPID
-GetPID:
-	addiu $2,$0,SC_GetPID
-	syscall
-	j	$31
-	.end GetPID
-
         .globl ThreadFork
         .ent    ThreadFork
 ThreadFork:

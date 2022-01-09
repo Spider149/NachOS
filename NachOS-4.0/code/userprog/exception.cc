@@ -569,16 +569,7 @@ ExceptionHandler(ExceptionType which)
 					break;
 				}
 				
-
-				case SC_GetPID:
-					result = kernel->currentThread->processID;
-					kernel->machine->WriteRegister(2, (int)result);
-					increasePC();
-					return;
-					ASSERTNOTREACHED();
-					break;
-
-
+				
 
 				default:
 					cerr << "Unexpected system call " << type << "\n";

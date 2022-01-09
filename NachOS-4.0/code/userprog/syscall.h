@@ -50,7 +50,6 @@
 #define SC_CreateSemaphore 50
 #define SC_Wait 51
 #define SC_Signal 52
-#define SC_GetPID 53
 
 #ifndef IN_ASM
 
@@ -64,34 +63,11 @@
  * from the system call entry point in exception.cc.
  */
 
+
+
 /* Stop Nachos, and print out performance stats */
 void Halt();
 
-/* Read a number */
-int ReadNum();
- 
-/* Print a number */
-void PrintNum(int number);
-
-/* Read char */
-char ReadChar();
-
-/* Print char */
-void PrintChar(char character);
-
-/* Return random > 0 */
-int RandomNum();
-
-/*  */
-void ReadString(char buffer[], int length);
-
-/*  */
-void PrintString(char buffer[]);
-/*
- * Add the two operants and return the result
- */ 
-
-int Add(int op1, int op2);
 
 /* Address space control operations: Exit, Exec, Execv, and Join */
 
@@ -100,9 +76,6 @@ void Exit(int status);
 
 /* A unique identifier for an executing user program (address space) */
 typedef int SpaceId;	
-
-/* A unique identifier for a thread within a task */
-typedef int ThreadId;
 
 /* Run the specified executable, with no args */
 /* This can be implemented as a call to ExecV.
@@ -131,16 +104,6 @@ int Join(SpaceId id);
  */
  
 /* A unique identifier for an open Nachos file. */
-typedef int OpenFileId;	
-
-/* when an address space starts up, it has two open files, representing 
- * keyboard input and display output (in UNIX terms, stdin and stdout).
- * Read and Write can be used directly on these, without first opening
- * the console device.
- */
-
-#define XConsoleInput	0  
-#define XConsoleOutput	1  
  
 /* Create a Nachos file, with name "name" */
 /* Note: Create does not open the file.   */
@@ -153,6 +116,7 @@ int Remove(char *name);
 /* Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
  */
+typedef int OpenFileId;	
 OpenFileId Open(char *name, int type);
 
 /* Write "size" bytes from "buffer" to the open file. 
@@ -179,33 +143,15 @@ int Seek(int position, OpenFileId id);
  */
 int Close(OpenFileId id);
 
-/* Tao cau truc du lieu de luu 10 semaphore
-* Tra ve 0 neu thanh cong, nguoc lai tra ve -1
-*/
-int CreateSemaphore(char* name, int semval);
-
-/* Name: Ten cua Semaphore
-*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
-*   Wait() -- release the lock, relinquish the CPU until signaled, 
-*		then re-acquire the lock
-*/
-int Wait(char* name);
-/* Name: Ten cua Semaphore
-* Signal() -- wake up a thread, if there are any waiting on 
-*		the condition
-*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
-*/
-int Signal(char* name);
-
-
-int GetPID();
-
 
 /* User-level thread operations: Fork and Yield.  To allow multiple
  * threads to run within a user program. 
  *
  * Could define other operations, such as LockAcquire, LockRelease, etc.
  */
+
+/* A unique identifier for a thread within a task */
+typedef int ThreadId;
 
 /* Fork a thread to run a procedure ("func") in the *same* address space 
  * as the current thread.
@@ -228,6 +174,60 @@ int ThreadJoin(ThreadId id);
  * Deletes current thread and returns ExitCode to every waiting lokal thread.
  */
 void ThreadExit(int ExitCode);	
+
+
+/* Read a number */
+int ReadNum();
+ 
+/* Print a number */
+void PrintNum(int number);
+
+/* Read char */
+char ReadChar();
+
+/* Print char */
+void PrintChar(char character);
+
+/* Return random > 0 */
+int RandomNum();
+
+/*  */
+void ReadString(char buffer[], int length);
+
+/*  */
+void PrintString(char buffer[]);
+/*
+ * Add the two operants and return the result
+ */ 
+int Add(int op1, int op2);
+
+
+/* when an address space starts up, it has two open files, representing 
+ * keyboard input and display output (in UNIX terms, stdin and stdout).
+ * Read and Write can be used directly on these, without first opening
+ * the console device.
+ */
+
+#define XConsoleInput	0  
+#define XConsoleOutput	1  
+/* Tao cau truc du lieu de luu 10 semaphore
+* Tra ve 0 neu thanh cong, nguoc lai tra ve -1
+*/
+int CreateSemaphore(char* name, int semval);
+/* Name: Ten cua Semaphore
+*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
+*   Wait() -- release the lock, relinquish the CPU until signaled, 
+*		then re-acquire the lock
+*/
+int Wait(char* name);
+/* Name: Ten cua Semaphore
+* Signal() -- wake up a thread, if there are any waiting on 
+*		the condition
+*  Tra ve 0 neu thanh cong, tra ve -1 neu loi
+*/
+int Signal(char* name);
+
+
 
 #endif /* IN_ASM */
 
