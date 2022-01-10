@@ -22,14 +22,17 @@ void main()
 
 
 	/* Tạo các semaphore cần thiết:
-		WaterTap	:	semaphore quản lí việc sử dụng vòi nước,
-						trong một thời điểm chỉ có tối đa một người dùng
-		send		:	semaphore quản lí việc nhận message,
-						chỉ khi nhận được message từ process cha thì process con mới thực thi tiếp
-		send		:	semaphore quản lí việc gửi message,
-						chỉ khi process con nhận được message thì process cha mới thực thi tiếp
+		OpenTap	:	semaphore quản lí việc mở vòi nước,
+					chỉ khi process cha mở vòi thì process con mới lấy được nước
+		CloseTap:	semaphore quản lí việc đóng lòi nước,
+					chỉ khi process con đóng vòi (trả vòi) thì process cha mới quản lí được vòi nước
+		send	:	semaphore quản lí việc nhận message,
+					chỉ khi nhận được message từ process cha thì process con mới thực thi tiếp
+		recv	:	semaphore quản lí việc gửi message,
+					chỉ khi process con nhận được message thì process cha mới thực thi tiếp
 	*/
-	CreateSemaphore("WaterTap", 0);		// Ban đầu vòi nước đóng. Vòi nước sẽ được mở phía bên dưới.
+	CreateSemaphore("OpenTap", 0);
+	CreateSemaphore("CloseTap", 0);
 	CreateSemaphore("send", 0);
 	CreateSemaphore("recv", 0);
 
@@ -71,8 +74,8 @@ void main()
 
 	// --- Mở vòi nước và cho các sinh viên lấy nước ---
 	PrintString("-------------------------------\n");
-	// Mở vòi nước.
-	Signal("WaterTap");
+	// Gọi process quản lí vòi nước
+	Exec("watertap");
 
 	// Đợi các sinh viên lấy nước xong.
 	for (i=1; i<=numStudent; i++) 

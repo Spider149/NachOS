@@ -112,7 +112,7 @@ ifeq ($(hosttype),unknown)
 PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
-PROGRAMS = add halt shell matmult sort segments number char string help ascii sort main ping pong scheduler student
+PROGRAMS = add halt shell matmult sort segments number char string help ascii sort main ping pong scheduler student watertap
 endif
 
 all: $(PROGRAMS)
@@ -222,6 +222,12 @@ student.o: student.c
 student: student.o start.o
 	$(LD) $(LDFLAGS) start.o student.o -o student.coff
 	$(COFF2NOFF) student.coff student
+
+watertap.o: watertap.c
+	$(CC) $(CFLAGS) -c watertap.c
+watertap: watertap.o start.o
+	$(LD) $(LDFLAGS) start.o watertap.o -o watertap.coff
+	$(COFF2NOFF) watertap.coff watertap
 
 clean:
 	$(RM) -f *.o *.ii

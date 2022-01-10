@@ -7,7 +7,7 @@ void main()
 	/* Tạo các biến cần thiết:
 		outputFile	:	OpenFileID của file output.txt
 		mailFile	:	OpenFileID của file mailbox.txt
-		waitTime    :   thời gian lấy nước của sinh viên
+		waitTime    :   thời gian lấy 1 lít nước của sinh viên
 		id			:	id của sinh viên
         tmp         :   một chuỗi phụ để phụ vụ việc đọc ghi file sẽ dùng bên dưới.
         i, j, k     :   các biến đếm
@@ -33,9 +33,10 @@ void main()
     outputFile = Open("output.txt", 0);
 
     // Mỗi sinh viên lấy nước 10 lần, mỗi lần được mô tả trong vòng lặp sau đây
-    for (i=0; i<SWATER; i++){
+    for (i=1; i<=SWATER; i++){
         // Đợi vòi nước mở
-        Wait("WaterTap");
+        Wait("OpenTap");
+
 
         // Lấy nước, vòng for thể hiện thời gian lấy nước của sinh viên
         for (j=0; j<waitTime; j++);
@@ -51,15 +52,19 @@ void main()
         PrintChar(id);
         PrintString("\n");
 
+        // Nếu đã lấy xong
+        if (i == SWATER) {
+            // Thông báo lên màn hình đã thực hiện xong
+            PrintString("(Student ");
+            PrintChar(id);
+            PrintString(" done)\n");
+        }
+
         // Trả lại vòi nước
-        Signal("WaterTap");
+        Signal("CloseTap");
     }
-    Close(outputFile);  // Đóng file kết quả
-    
-    // Thông báo lên màn hình đã thực hiện xong
-    PrintString("(Student ");
-    PrintChar(id);
-    PrintString(" done)\n");
+    // Đóng file kết quả
+    Close(outputFile);
 
     // Kết thúc process
     Exit(0);
