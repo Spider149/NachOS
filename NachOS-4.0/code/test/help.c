@@ -13,7 +13,7 @@ main()
     PrintString("---------- Mo ta van tat ve chuong trinh ascii ---------- \n");
     PrintString("In ra cac ki tu co the nhin thay (Tu 32 den 127) cua bang ma ASCII\n");*/
     PrintString("hi \n");
-    PrintNum(CreateSemaphore("hi", 3));
+    PrintNum(Open("stdout",3));
     PrintString("hello \n");
     Halt();
     /* not reached */
