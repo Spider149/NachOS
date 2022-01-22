@@ -9,7 +9,7 @@ void main()
 		mailFile	:	OpenFileID của file mailbox.txt
 		waitTime    :   thời gian lấy 1 lít nước của sinh viên
 		id			:	id của sinh viên
-        tmp         :   một chuỗi phụ để phụ vụ việc đọc ghi file sẽ dùng bên dưới.
+        tmp         :   một chuỗi phụ để phục vụ việc đọc ghi file sẽ dùng bên dưới.
         i, j, k     :   các biến đếm
 	*/
     int outputFile, mailFile;
@@ -44,21 +44,19 @@ void main()
         // Ghi vào file kết quả
         while(Read(tmp, 1, outputFile) > 0);    // Tận dụng lệnh read để di chuyển con trỏ đến cuối file
         Write(&id, 1, outputFile);              // Ghi ID sinh viên vào file cho biết thứ tự sinh viên này lấy nước
-        tmp = " ";
-        Write(tmp, 1, outputFile);              // GHi dấu khoảng trắng
+        Write(" ", 1, outputFile);              // Ghi dấu khoảng trắng
+
 
         // Phần in ra màn hình để theo dõi
         for (k = 1; k < (int)(id-'0'); k++) PrintString("      ");
         PrintChar(id);
         PrintString("\n");
-
-        // Nếu đã lấy xong
         if (i == SWATER) {
-            // Thông báo lên màn hình đã thực hiện xong
             PrintString("(Student ");
             PrintChar(id);
             PrintString(" done)\n");
         }
+
 
         // Trả lại vòi nước
         Signal("CloseTap");
