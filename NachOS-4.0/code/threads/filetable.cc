@@ -31,7 +31,13 @@ OpenFile* FileTable::getFileById(int id){
 
 //Mo file  bang ten file va co the mo hai loai khac nhau: file chi doc, file co the doc va ghi
 int FileTable::Open(char* name, int type){
-    int fileDescriptor = OpenForReadWrite(name, FALSE);
+    int fileDescriptor;
+    if(type == 3 || type == 0)
+        fileDescriptor = OpenForRead(name, FALSE);
+    else if (type == 2)
+        fileDescriptor = OpenForWrite(name);
+    else if (type == 1)
+        fileDescriptor = OpenForReadWrite(name, FALSE);
 
 	if (fileDescriptor == -1) return -1;
 	int freeSlot = FindFreeSlot();
@@ -72,7 +78,13 @@ OpenFile* FileTable::OpenF(char* name){
 
 //Mo mot file gom ten va loai bang UNIX
 OpenFile* FileTable::OpenF(char* name, int type){
-    int fileDescriptor = OpenForReadWrite(name, FALSE);
+    int fileDescriptor;
+    if(type == 3 || type == 0)
+        fileDescriptor = OpenForRead(name, FALSE);
+    else if (type == 2)
+        fileDescriptor = OpenForWrite(name);
+    else if (type == 1)
+        fileDescriptor = OpenForReadWrite(name, FALSE);
     if (fileDescriptor == -1) return NULL;
     return new OpenFile(fileDescriptor);
 }

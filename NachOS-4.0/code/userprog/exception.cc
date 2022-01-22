@@ -230,24 +230,26 @@ ExceptionHandler(ExceptionType which)
 						increasePC();
 						return;
 					}
-					//Xu ly khi loai file duoc mo la: 0: file chi doc, 1: file doc va ghi
-					if (type == 0 || type == 1){
+					if (type == 0 || type == 1 || type == 2 || type == 3){
 						//Mo file bang phuong thuc Open cua fileTable
 						int fid = kernel->pTable->getPCB(kernel->currentThread->processID)->getFileTable()->Open(fileName, type);
 						if ( fid != -1){
-							//cerr << "Open file " << fileName <<" success \n";
-							//Thanh cong tra ve OpenFileId
-							kernel->machine->WriteRegister(2, fid);
+							//Xu ly khi loai file duoc mo la: 0: file chi doc, 1: file doc va ghi
+							if (type == 0 || type == 1){
+								//cerr << "Open file " << fileName <<" success \n";
+								//Thanh cong tra ve OpenFileId
+								kernel->machine->WriteRegister(2, fid);
+							} else  if (type == 2){ //Xu ly loai file la 2: stdin mode
+								cerr << "Sdtin mode \n";
+								kernel->machine->WriteRegister(2, 0);
+							} else { //Xy ly loai file la 3: stdout mode
+								cerr << "Stdout mode \n";
+								kernel->machine->WriteRegister(2, 1);
+							}
 						} else{
 							//That bai tra ve -1
 							kernel->machine->WriteRegister(2, -1);
 						}
-					} else if (type == 2) { //Xu ly loai file la 2: stdin mode
-							cerr << "Sdtin mode \n";
-							kernel->machine->WriteRegister(2, 0);
-					} else if (type == 3){ //Xy ly loai file la 3: stdout mode
-						cerr << "Stdout mode \n";
-						kernel->machine->WriteRegister(2, 1);
 					}
 					if (fileName)
 						delete[] fileName;
